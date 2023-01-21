@@ -5,8 +5,17 @@ export const notFound = (_req: Request, _res: Response, next: NextFunction) => {
   next(new NotFound());
 };
 
-export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
-  res
-    .status(error.status || 500)
-    .json({ success: false, message: error.message });
+export const errorHandler: ErrorRequestHandler = (
+  error: any,
+  _req,
+  res,
+  _next
+) => {
+  res.status(error.status || 500).json({
+    success: false,
+    error: {
+      message: error.message,
+      _message: error.parent.sqlMessage ?? undefined,
+    },
+  });
 };
