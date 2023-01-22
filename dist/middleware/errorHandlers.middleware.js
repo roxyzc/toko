@@ -7,12 +7,12 @@ const notFound = (_req, _res, next) => {
 };
 exports.notFound = notFound;
 const errorHandler = (error, _req, res, _next) => {
-    var _a;
+    var _a, _b;
     res.status(error.status || 500).json({
         success: false,
         error: {
             message: error.message,
-            _message: (_a = error.parent.sqlMessage) !== null && _a !== void 0 ? _a : undefined,
+            _message: (_b = (_a = error.parent) === null || _a === void 0 ? void 0 : _a.sqlMessage) !== null && _b !== void 0 ? _b : undefined,
         },
     });
 };

@@ -2,6 +2,7 @@ import { Model, DataTypes } from "sequelize";
 import db from "../configs/database.config";
 import bcrypt from "bcrypt";
 import { STATUS, ROLE } from "../types/default";
+import Token from "./token.model";
 
 export interface IUserModel {
   id: string;
@@ -10,6 +11,7 @@ export interface IUserModel {
   password: string;
   status?: STATUS;
   role?: ROLE;
+  tokenId?: Number;
   createdAt?: string;
   updatedAt?: string;
   expiredAt?: string;
@@ -21,6 +23,7 @@ class User extends Model<IUserModel> {
   password?: string;
   status?: STATUS;
   role?: ROLE;
+  tokenId?: Number;
   createdAt?: string;
   updatedAt?: string;
   expiredAt?: string;
@@ -57,6 +60,10 @@ User.init(
       defaultValue: "user",
       allowNull: false,
     },
+    tokenId: {
+      type: DataTypes.INTEGER(),
+      allowNull: true,
+    },
     createdAt: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -82,13 +89,14 @@ User.init(
         user.updatedAt = String(createdAtAndUpdatedAt);
       },
       beforeSave: async (user) => {
-        console.log(user.getDataValue("password") as string);
-        const salt = await bcrypt.genSalt(Number(process.env.SALT));
-        const hashPassword = await bcrypt.hash(
-          user.getDataValue("password") as string,
-          salt
-        );
-        user.password = hashPassword;
+        if (user.changed("password")) {
+          const salt = await bcrypt.genSalt(Number(process.env.SALT));
+          const hashPassword = await bcrypt.hash(
+            user.getDataValue("password") as string,
+            salt
+          );
+          user.password = hashPassword;
+        }
       },
     },
     sequelize: db,
@@ -101,7 +109,6 @@ User.init(
 User.prototype.comparePassword = async function (
   candidatePassword: string
 ): Promise<Boolean> {
-  console.log(this.getDataValue("password"));
   return await bcrypt
     .compare(
       candidatePassword as string,
@@ -109,5 +116,8 @@ User.prototype.comparePassword = async function (
     )
     .catch(() => false);
 };
+
+User.hasOne(Token, { foreignKey: "tokenId" });
+User.belongsTo(Token, { foreignKey: "tokenId" });
 
 export default User;

@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
+import Token from "../../../models/token.model";
 import User from "../../../models/user.model";
 import { STATUS } from "../../../types/default";
-// import bcrypt from "bcrypt";
+import { generateToken } from "../../../utils/generateToken.util";
 
 const login = async (
   req: Request,
@@ -11,6 +12,7 @@ const login = async (
   const { email, password } = req.body;
   try {
     const findUser = await User.findOne({
+      include: Token,
       where: {
         email,
       },
@@ -30,7 +32,23 @@ const login = async (
       return res
         .status(400)
         .json({ success: false, error: { message: "password invalid" } });
-    res.status(200).json({ success: true, message: "Login successfully" });
+
+    const { accessToken, refreshToken } = await generateToken(
+      findUser.getDataValue("id") as string,
+      String(findUser.getDataValue("role"))
+    );
+
+    if (findUser.tokenId === null || findUser.tokenId === undefined) {
+      const createToken = await Token.create({ accessToken, refreshToken });
+      findUser.setDataValue("tokenId", createToken.getDataValue("tokenId"));
+      await findUser.save();
+    }
+
+    await findUser.reload({ include: Token });
+
+    res
+      .status(200)
+      .json({ success: true, message: "Login successfully", data: findUser });
   } catch (error) {
     next(error);
   }

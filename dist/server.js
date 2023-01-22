@@ -15,7 +15,8 @@ database_config_1.default.sync()
     .then(() => {
     logger_log_1.logger.info("Connection to database successfully");
 })
-    .catch(() => {
+    .catch((error) => {
+    console.log(error);
     logger_log_1.logger.error("Connection to database failed");
     process.exit(1);
 });

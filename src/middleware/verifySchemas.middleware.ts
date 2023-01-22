@@ -24,6 +24,7 @@ export const schema = {
         .max(20)
         .label("Nama")
         .required()
+        .regex(/^[a-zA-Z .]+$/i, { invert: false })
         .messages({
           "string.base": `{{#label}} should be a type of 'text'`,
           "string.empty": `{{#label}} cannot be an empty field`,

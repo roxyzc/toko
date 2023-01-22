@@ -6,6 +6,6 @@ import login from "./login/controllers/login.controller";
 const route: Router = Router();
 
 route.post("/register", validateSchema(schema.Auth.register), routeRegister);
-route.post("/login", login);
+route.post("/login", validateSchema(schema.Auth.login), login);
 
 export default route;
