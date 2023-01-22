@@ -12,6 +12,11 @@ export enum ROLE {
   user,
 }
 
+export enum TYPE {
+  register,
+  forgotPassword,
+}
+
 declare global {
   namespace NodeJs {
     interface ProcessEnv {
@@ -24,6 +29,8 @@ declare global {
       ACCESSTOKENSECRET: string;
       REFRESHTOKENSECRET: string;
       SALT: number;
+      USER: string;
+      PASS: string;
     }
   }
 }

@@ -10,9 +10,9 @@ export interface IUserModel {
   password: string;
   status?: STATUS;
   role?: ROLE;
-  createdAt?: Date;
-  updatedAt?: Date;
-  expiredAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
+  expiredAt?: string;
 }
 
 class User extends Model<IUserModel> {
@@ -21,9 +21,10 @@ class User extends Model<IUserModel> {
   password?: string;
   status?: STATUS;
   role?: ROLE;
-  createdAt?: Date;
-  updatedAt?: Date;
-  expiredAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
+  expiredAt?: string;
+  comparePassword?: (candidatePassword: string) => Promise<Boolean>;
 }
 
 User.init(
@@ -57,38 +58,56 @@ User.init(
       allowNull: false,
     },
     createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     expiredAt: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
-      defaultValue: undefined,
     },
   },
   {
     hooks: {
       beforeCreate: async (user) => {
+        const time = new Date(new Date().setHours(new Date().getHours() + 24));
+        const createdAtAndUpdatedAt = new Date().getTime();
         String(user.status) == "active"
           ? undefined
-          : (user.expiredAt = new Date(
-              new Date().setHours(new Date().getHours() + 24)
-            ));
-
-        user.password = await bcrypt.hash(
-          user.password as string,
-          Number(process.env.SALT)
+          : (user.expiredAt = String(time.getTime()));
+        user.createdAt = String(createdAtAndUpdatedAt);
+        user.updatedAt = String(createdAtAndUpdatedAt);
+      },
+      beforeSave: async (user) => {
+        console.log(user.getDataValue("password") as string);
+        const salt = await bcrypt.genSalt(Number(process.env.SALT));
+        const hashPassword = await bcrypt.hash(
+          user.getDataValue("password") as string,
+          salt
         );
+        user.password = hashPassword;
       },
     },
-    timestamps: true,
     sequelize: db,
+    timestamps: false,
     tableName: "Users",
+    freezeTableName: true,
   }
 );
+
+User.prototype.comparePassword = async function (
+  candidatePassword: string
+): Promise<Boolean> {
+  console.log(this.getDataValue("password"));
+  return await bcrypt
+    .compare(
+      candidatePassword as string,
+      this.getDataValue("password") as string
+    )
+    .catch(() => false);
+};
 
 export default User;

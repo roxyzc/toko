@@ -15,7 +15,7 @@ export const errorHandler: ErrorRequestHandler = (
     success: false,
     error: {
       message: error.message,
-      _message: error.parent.sqlMessage ?? undefined,
+      _message: error.parent?.sqlMessage ?? undefined,
     },
   });
 };

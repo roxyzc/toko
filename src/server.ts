@@ -11,7 +11,8 @@ db.sync()
   .then(() => {
     logger.info("Connection to database successfully");
   })
-  .catch(() => {
+  .catch((error) => {
+    console.log(error);
     logger.error("Connection to database failed");
     process.exit(1);
   });
