@@ -36,13 +36,30 @@ const verifyAccount = async (
     const user = await User.findOne({
       where: { email: findOtpInTable.getDataValue("email") },
     });
-    if (!user || user.getDataValue("expiredAt") === null)
+    if (
+      !user ||
+      (user.getDataValue("expiredAt") === null &&
+        user.getDataValue("status") === ("active" as unknown as STATUS))
+    ) {
+      await Otp.destroy({
+        where: {
+          otp,
+          type: "register",
+        },
+      });
       return res
         .status(200)
         .json({ success: false, error: { message: "user not found" } });
+    }
     if (Number(user.getDataValue("expiredAt")) < Number(new Date().getTime())) {
       await User.destroy({
         where: { email: findOtpInTable.getDataValue("email") },
+      });
+      await Otp.destroy({
+        where: {
+          otp,
+          type: "register",
+        },
       });
       return res
         .status(400)
