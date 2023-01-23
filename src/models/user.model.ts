@@ -12,9 +12,9 @@ export interface IUserModel {
   status?: STATUS;
   role?: ROLE;
   tokenId?: Number;
-  createdAt?: string;
-  updatedAt?: string;
-  expiredAt?: string;
+  createdAt?: Number;
+  updatedAt?: Number;
+  expiredAt?: Number | null;
 }
 
 class User extends Model<IUserModel> {
@@ -24,9 +24,9 @@ class User extends Model<IUserModel> {
   status?: STATUS;
   role?: ROLE;
   tokenId?: Number;
-  createdAt?: string;
-  updatedAt?: string;
-  expiredAt?: string;
+  createdAt?: Number;
+  updatedAt?: Number;
+  expiredAt?: Number | null;
   comparePassword?: (candidatePassword: string) => Promise<Boolean>;
 }
 
@@ -65,15 +65,15 @@ User.init(
       allowNull: true,
     },
     createdAt: {
-      type: DataTypes.STRING,
+      type: DataTypes.BIGINT(),
       allowNull: true,
     },
     updatedAt: {
-      type: DataTypes.STRING,
+      type: DataTypes.BIGINT(),
       allowNull: true,
     },
     expiredAt: {
-      type: DataTypes.STRING,
+      type: DataTypes.BIGINT(),
       allowNull: true,
     },
   },
@@ -83,10 +83,10 @@ User.init(
         const time = new Date(new Date().setHours(new Date().getHours() + 24));
         const createdAtAndUpdatedAt = new Date().getTime();
         String(user.status) == "active"
-          ? undefined
-          : (user.expiredAt = String(time.getTime()));
-        user.createdAt = String(createdAtAndUpdatedAt);
-        user.updatedAt = String(createdAtAndUpdatedAt);
+          ? (user.expiredAt = undefined)
+          : (user.expiredAt = Number(time.getTime()));
+        user.createdAt = Number(createdAtAndUpdatedAt);
+        user.updatedAt = Number(createdAtAndUpdatedAt);
       },
       beforeSave: async (user) => {
         if (user.changed("password")) {

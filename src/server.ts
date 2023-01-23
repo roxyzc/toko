@@ -6,6 +6,8 @@ import { errorHandler, notFound } from "./middleware/errorHandlers.middleware";
 import "dotenv/config";
 import db from "./configs/database.config";
 import routeAuth from "./auth/index";
+import cekOtp from "./service/otp.service";
+import cekUser from "./service/user.service";
 
 db.sync()
   .then(() => {
@@ -30,6 +32,9 @@ app.use(
     credentials: true,
   })
 );
+
+cekOtp;
+cekUser;
 
 app.use("/api/auth", routeAuth);
 app.use(notFound);

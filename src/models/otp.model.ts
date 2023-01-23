@@ -7,8 +7,8 @@ export interface IOtpModel {
   email: string;
   otp: string;
   type?: TYPE;
-  createdAt?: string;
-  expiredAt?: string;
+  createdAt?: Number;
+  expiredAt?: Number;
 }
 
 class Otp extends Model<IOtpModel> {
@@ -16,8 +16,8 @@ class Otp extends Model<IOtpModel> {
   email?: string;
   otp?: string;
   type?: TYPE;
-  createdAt?: string;
-  expiredAt?: string;
+  createdAt?: Number;
+  expiredAt?: Number;
 }
 
 Otp.init(
@@ -47,21 +47,22 @@ Otp.init(
       allowNull: false,
     },
     createdAt: {
-      type: DataTypes.STRING,
+      type: DataTypes.BIGINT,
       allowNull: true,
     },
     expiredAt: {
-      type: DataTypes.STRING,
+      type: DataTypes.BIGINT,
       allowNull: true,
     },
   },
   {
     hooks: {
       beforeCreate: async (otp) => {
-        const time = new Date(new Date().setHours(new Date().getMinutes() + 5));
+        // const time = new Date(new Date().setHours(new Date().getMinutes() + 5));
+        const time = Number(new Date().getTime()) + 300000;
         const createdAt = new Date().getTime();
-        otp.expiredAt = String(time.getTime());
-        otp.createdAt = String(createdAt);
+        otp.expiredAt = Number(time);
+        otp.createdAt = Number(createdAt);
       },
     },
     timestamps: false,
