@@ -11,6 +11,8 @@ const errorHandlers_middleware_1 = require("./middleware/errorHandlers.middlewar
 require("dotenv/config");
 const database_config_1 = __importDefault(require("./configs/database.config"));
 const index_1 = __importDefault(require("./auth/index"));
+const otp_service_1 = __importDefault(require("./service/otp.service"));
+const user_service_1 = __importDefault(require("./service/user.service"));
 database_config_1.default.sync()
     .then(() => {
     logger_log_1.logger.info("Connection to database successfully");
@@ -31,6 +33,8 @@ app.use((0, cors_1.default)({
     origin: true,
     credentials: true,
 }));
+otp_service_1.default;
+user_service_1.default;
 app.use("/api/auth", index_1.default);
 app.use(errorHandlers_middleware_1.notFound);
 app.use(errorHandlers_middleware_1.errorHandler);

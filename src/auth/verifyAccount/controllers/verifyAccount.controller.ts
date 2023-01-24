@@ -38,8 +38,8 @@ const verifyAccount = async (
     });
     if (
       !user ||
-      (user.getDataValue("expiredAt") === null &&
-        user.getDataValue("status") === ("active" as unknown as STATUS))
+      user.getDataValue("expiredAt") === null ||
+      user.getDataValue("status") === ("active" as unknown as STATUS)
     ) {
       await Otp.destroy({
         where: {
@@ -51,6 +51,7 @@ const verifyAccount = async (
         .status(200)
         .json({ success: false, error: { message: "user not found" } });
     }
+
     if (Number(user.getDataValue("expiredAt")) < Number(new Date().getTime())) {
       await User.destroy({
         where: { email: findOtpInTable.getDataValue("email") },

@@ -42,20 +42,21 @@ Otp.init({
         allowNull: false,
     },
     createdAt: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.BIGINT,
         allowNull: true,
     },
     expiredAt: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.BIGINT,
         allowNull: true,
     },
 }, {
     hooks: {
         beforeCreate: (otp) => __awaiter(void 0, void 0, void 0, function* () {
-            const time = new Date(new Date().setHours(new Date().getMinutes() + 5));
+            // const time = new Date(new Date().setHours(new Date().getMinutes() + 5));
+            const time = Number(new Date().getTime()) + 300000;
             const createdAt = new Date().getTime();
-            otp.expiredAt = String(time.getTime());
-            otp.createdAt = String(createdAt);
+            otp.expiredAt = Number(time);
+            otp.createdAt = Number(createdAt);
         }),
     },
     timestamps: false,

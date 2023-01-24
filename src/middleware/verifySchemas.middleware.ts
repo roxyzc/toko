@@ -82,5 +82,12 @@ export const schema = {
           "any.required": `{{#label}} is a required field`,
         }),
     }),
+    verifyOtp: joi.object({
+      otp: joi.string().label("Otp").required().messages({
+        "string.base": `{{#label}} should be a type of 'text'`,
+        "string.empty": `{{#label}} cannot be an empty field`,
+        "any.required": `{{#label}} is a required field`,
+      }),
+    }),
   },
 };

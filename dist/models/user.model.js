@@ -52,15 +52,15 @@ User.init({
         allowNull: true,
     },
     createdAt: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.BIGINT(),
         allowNull: true,
     },
     updatedAt: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.BIGINT(),
         allowNull: true,
     },
     expiredAt: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.BIGINT(),
         allowNull: true,
     },
 }, {
@@ -69,10 +69,10 @@ User.init({
             const time = new Date(new Date().setHours(new Date().getHours() + 24));
             const createdAtAndUpdatedAt = new Date().getTime();
             String(user.status) == "active"
-                ? undefined
-                : (user.expiredAt = String(time.getTime()));
-            user.createdAt = String(createdAtAndUpdatedAt);
-            user.updatedAt = String(createdAtAndUpdatedAt);
+                ? (user.expiredAt = undefined)
+                : (user.expiredAt = Number(time.getTime()));
+            user.createdAt = Number(createdAtAndUpdatedAt);
+            user.updatedAt = Number(createdAtAndUpdatedAt);
         }),
         beforeSave: (user) => __awaiter(void 0, void 0, void 0, function* () {
             if (user.changed("password")) {

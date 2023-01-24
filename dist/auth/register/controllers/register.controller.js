@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const short_unique_id_1 = __importDefault(require("short-unique-id"));
-const logger_log_1 = require("../../../logs/logger.log");
 const user_model_1 = __importDefault(require("../../../models/user.model"));
 const otp_model_1 = __importDefault(require("../../../models/otp.model"));
 const database_config_1 = __importDefault(require("../../../configs/database.config"));
@@ -49,12 +48,6 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
                 .status(400)
                 .json({ success: false, error: { message: "user already exists" } });
         }
-        const user = yield user_model_1.default.create({
-            id,
-            nama: nama,
-            email: email,
-            password: password,
-        }, { transaction: t });
         const findUserInTableOtp = yield otp_model_1.default.findOne({
             where: { email, type: "register" },
         });
@@ -64,6 +57,12 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
                 .status(400)
                 .json({ success: false, error: { message: "otp already exists" } });
         }
+        const user = yield user_model_1.default.create({
+            id,
+            nama: nama,
+            email: email,
+            password: password,
+        }, { transaction: t });
         const otp = yield (0, generateOtp_util_1.generateOTP)(4);
         const createOtp = yield otp_model_1.default.create({
             ip,
@@ -81,7 +80,6 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
     }
     catch (error) {
         t.rollback();
-        logger_log_1.logger.error(error.message);
         next(error);
     }
 });
