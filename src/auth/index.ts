@@ -3,7 +3,6 @@ import routeRegister from "./register/controllers/register.controller";
 import { schema, validateSchema } from "../middleware/verifySchemas.middleware";
 import login from "./login/controllers/login.controller";
 import verifyAccount from "./verifyAccount/controllers/verifyAccount.controller";
-import takeOtp from "./otp/controllers/takeOtp.controller";
 
 const route: Router = Router();
 
@@ -14,6 +13,5 @@ route.post(
   validateSchema(schema.Auth.verifyOtp),
   verifyAccount
 );
-route.post("/getOtp", takeOtp);
 
 export default route;

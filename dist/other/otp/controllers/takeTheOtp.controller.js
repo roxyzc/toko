@@ -13,25 +13,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const otp_model_1 = __importDefault(require("../../../models/otp.model"));
+const user_model_1 = __importDefault(require("../../../models/user.model"));
 const generateOtp_util_1 = require("../../../utils/generateOtp.util");
 const sendEmail_util_1 = require("../../../utils/sendEmail.util");
-const takeOtp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email } = req.body;
+const takeTheOtp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { ip, email, type } = req.body;
     try {
-        const otp = yield otp_model_1.default.findOne({ where: { email, type: "register" } });
-        if (!otp) {
+        const user = yield user_model_1.default.findOne({
+            where: { email, status: "pending" },
+        });
+        if (!user) {
             return res
                 .status(400)
-                .json({ success: false, error: { message: "otp expired" } });
+                .json({ success: false, error: { message: "user not found" } });
         }
-        const createOtp = yield (0, generateOtp_util_1.generateOTP)();
-        const valid = yield (0, sendEmail_util_1.sendEmail)(email, createOtp.otp);
+        const otp = yield otp_model_1.default.findOne({
+            where: { email, type: type },
+        });
+        const createOtp = yield (0, generateOtp_util_1.generateOTP)(4);
+        const valid = yield (0, sendEmail_util_1.sendEmail)(email, createOtp);
         if (!valid) {
             throw new Error("failed to send email");
         }
+        if (!otp) {
+            yield otp_model_1.default.create({
+                email,
+                type: type,
+                otp: createOtp,
+                ip,
+            });
+            return res
+                .status(200)
+                .json({ success: true, data: { message: "otp resent successfully" } });
+        }
+        if (Number(new Date().getTime()) - Number(otp.updatedAt) < 60000) {
+            return res.status(200).json({
+                success: true,
+                data: {
+                    time: otp.updatedAt,
+                    message: "-_-",
+                },
+            });
+        }
         yield otp_model_1.default.update({
             otp: createOtp,
-            expiredAt: Number(new Date().getTime()) + 300000,
+            type: type,
+            updatedAt: Number(new Date().getTime()),
+            expiredAt: Number(new Date().getTime()) + 180000,
         }, {
             where: {
                 email,
@@ -39,11 +67,11 @@ const takeOtp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         });
         res.status(200).json({
             success: true,
-            data: otp,
+            data: { message: "otp resent successfully" },
         });
     }
     catch (error) {
         next(error);
     }
 });
-exports.default = takeOtp;
+exports.default = takeTheOtp;

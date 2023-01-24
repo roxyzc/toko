@@ -104,4 +104,36 @@ exports.schema = {
             }),
         }),
     },
+    Other: {
+        cekEmail: joi_1.default.object({
+            email: joi_1.default.string().email().label("Email").required().messages({
+                "string.email": `'{{#label}}' in Email must be a valid {{#label}}`,
+                "string.empty": `{{#label}} cannot be an empty field`,
+                "any.required": `{{#label}} is a required field`,
+            }),
+        }),
+        otp: joi_1.default.object({
+            ip: joi_1.default.string().required().label("Ip").messages({
+                "string.base": `{{#label}} should be a type of 'text'`,
+                "string.empty": `{{#label}} cannot be an empty field`,
+                "any.required": `{{#label}} is a required field`,
+            }),
+            email: joi_1.default.string().email().label("Email").required().messages({
+                "string.email": `'{{#label}}' in Email must be a valid {{#label}}`,
+                "string.empty": `{{#label}} cannot be an empty field`,
+                "any.required": `{{#label}} is a required field`,
+            }),
+            type: joi_1.default
+                .string()
+                .valid("register", "forgotPassword")
+                .required()
+                .label("Type")
+                .messages({
+                "any.only": `{{#label}} {#value} is missing`,
+                "string.base": `{{#label}} should be a type of 'String'`,
+                "string.empty": `{{#label}} cannot be an empty field`,
+                "any.required": `{{#label}} is a required field`,
+            }),
+        }),
+    },
 };

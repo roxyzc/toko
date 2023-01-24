@@ -67,7 +67,7 @@ const verifyAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, func
                 .json({ success: false, error: { message: "account expired" } });
         }
         yield user_model_1.default.update({ status: "active", expiredAt: null }, { where: { email: findOtpInTable.getDataValue("email") } });
-        const destroyOtp = yield otp_model_1.default.destroy({
+        yield otp_model_1.default.destroy({
             where: {
                 otp,
                 type: "register",
@@ -75,8 +75,9 @@ const verifyAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         });
         res.status(200).json({
             success: true,
-            message: "verification account successfully",
-            data: destroyOtp,
+            data: {
+                message: "verification account successfully",
+            },
         });
     }
     catch (error) {

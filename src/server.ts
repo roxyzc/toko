@@ -6,6 +6,7 @@ import { errorHandler, notFound } from "./middleware/errorHandlers.middleware";
 import "dotenv/config";
 import db from "./configs/database.config";
 import routeAuth from "./auth/index";
+import route from "./other/index";
 import cekOtp from "./service/otp.service";
 import cekUser from "./service/user.service";
 
@@ -37,6 +38,7 @@ cekOtp;
 cekUser;
 
 app.use("/api/auth", routeAuth);
+app.use("/api", route);
 app.use(notFound);
 app.use(errorHandler);
 

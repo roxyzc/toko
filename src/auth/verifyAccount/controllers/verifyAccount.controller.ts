@@ -72,7 +72,7 @@ const verifyAccount = async (
       { where: { email: findOtpInTable.getDataValue("email") } }
     );
 
-    const destroyOtp = await Otp.destroy({
+    await Otp.destroy({
       where: {
         otp,
         type: "register",
@@ -81,8 +81,9 @@ const verifyAccount = async (
 
     res.status(200).json({
       success: true,
-      message: "verification account successfully",
-      data: destroyOtp,
+      data: {
+        message: "verification account successfully",
+      },
     });
   } catch (error) {
     next(error);
