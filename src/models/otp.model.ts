@@ -1,8 +1,8 @@
-import { Model, DataTypes } from "sequelize";
+import { Model, DataTypes, UUIDV4 } from "sequelize";
 import db from "../configs/database.config";
 import { TYPE } from "../types/default";
 export interface IOtpModel {
-  id?: Number;
+  id?: string;
   ip: string;
   email: string;
   otp: string;
@@ -25,8 +25,8 @@ class Otp extends Model<IOtpModel> {
 Otp.init(
   {
     id: {
-      type: DataTypes.INTEGER(),
-      autoIncrement: true,
+      type: DataTypes.STRING,
+      defaultValue: UUIDV4(),
       primaryKey: true,
       allowNull: false,
     },

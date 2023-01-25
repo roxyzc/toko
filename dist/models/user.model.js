@@ -48,7 +48,7 @@ User.init({
         allowNull: false,
     },
     tokenId: {
-        type: sequelize_1.DataTypes.INTEGER(),
+        type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
     createdAt: {

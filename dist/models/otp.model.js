@@ -9,8 +9,8 @@ class Otp extends sequelize_1.Model {
 }
 Otp.init({
     id: {
-        type: sequelize_1.DataTypes.INTEGER(),
-        autoIncrement: true,
+        type: sequelize_1.DataTypes.STRING,
+        defaultValue: (0, sequelize_1.UUIDV4)(),
         primaryKey: true,
         allowNull: false,
     },

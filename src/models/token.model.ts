@@ -1,8 +1,8 @@
-import { Model, DataTypes } from "sequelize";
+import { Model, DataTypes, UUIDV4 } from "sequelize";
 import db from "../configs/database.config";
 
 export interface ITokenModel {
-  tokenId?: Number;
+  tokenId?: string;
   accessToken?: string;
   refreshToken?: string;
 }
@@ -12,8 +12,8 @@ class Token extends Model<ITokenModel> {}
 Token.init(
   {
     tokenId: {
-      type: DataTypes.INTEGER(),
-      autoIncrement: true,
+      type: DataTypes.STRING,
+      defaultValue: UUIDV4(),
       primaryKey: true,
       allowNull: false,
     },

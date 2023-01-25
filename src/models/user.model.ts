@@ -11,7 +11,7 @@ export interface IUserModel {
   password: string;
   status?: STATUS;
   role?: ROLE;
-  tokenId?: Number;
+  tokenId?: string;
   createdAt?: Number;
   updatedAt?: Number;
   expiredAt?: Number | null;
@@ -23,7 +23,7 @@ class User extends Model<IUserModel> {
   password?: string;
   status?: STATUS;
   role?: ROLE;
-  tokenId?: Number;
+  tokenId?: string;
   createdAt?: Number;
   updatedAt?: Number;
   expiredAt?: Number | null;
@@ -61,7 +61,7 @@ User.init(
       allowNull: false,
     },
     tokenId: {
-      type: DataTypes.INTEGER(),
+      type: DataTypes.STRING,
       allowNull: true,
     },
     createdAt: {
