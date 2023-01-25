@@ -37,12 +37,12 @@ Otp.init(
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: "email",
     },
     otp: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: "otp",
     },
     type: {
       type: DataTypes.ENUM("register", "forgotPassword"),

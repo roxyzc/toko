@@ -33,4 +33,9 @@ declare global {
       PASS: string;
     }
   }
+  namespace Express {
+    export interface Request {
+      USER: Record<string | any>;
+    }
+  }
 }

@@ -10,7 +10,7 @@ import route from "./other/index";
 import cekOtp from "./service/otp.service";
 import cekUser from "./service/user.service";
 
-db.sync()
+db.sync({ alter: true, force: false })
   .then(() => {
     logger.info("Connection to database successfully");
   })

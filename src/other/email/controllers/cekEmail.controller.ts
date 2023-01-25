@@ -14,7 +14,7 @@ const cekEmail = async (
         .status(200)
         .json({ success: true, data: { message: "email available" } });
     res
-      .status(200)
+      .status(201)
       .json({ success: true, data: { message: "email not available" } });
   } catch (error) {
     next(error);
