@@ -22,7 +22,7 @@ const cekEmail = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
                 .status(200)
                 .json({ success: true, data: { message: "email available" } });
         res
-            .status(200)
+            .status(201)
             .json({ success: true, data: { message: "email not available" } });
     }
     catch (error) {

@@ -14,7 +14,7 @@ const index_1 = __importDefault(require("./auth/index"));
 const index_2 = __importDefault(require("./other/index"));
 const otp_service_1 = __importDefault(require("./service/otp.service"));
 const user_service_1 = __importDefault(require("./service/user.service"));
-database_config_1.default.sync()
+database_config_1.default.sync({ alter: true, force: false })
     .then(() => {
     logger_log_1.logger.info("Connection to database successfully");
 })

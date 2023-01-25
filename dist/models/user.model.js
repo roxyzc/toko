@@ -31,7 +31,7 @@ User.init({
     email: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: "email",
     },
     password: {
         type: sequelize_1.DataTypes.STRING,
@@ -43,7 +43,7 @@ User.init({
         allowNull: false,
     },
     role: {
-        type: sequelize_1.DataTypes.ENUM("admin", "pemilik", "karyawan", "user"),
+        type: sequelize_1.DataTypes.ENUM("admin", "user"),
         defaultValue: "user",
         allowNull: false,
     },

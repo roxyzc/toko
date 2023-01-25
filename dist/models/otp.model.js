@@ -21,12 +21,12 @@ Otp.init({
     email: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: "email",
     },
     otp: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: "otp",
     },
     type: {
         type: sequelize_1.DataTypes.ENUM("register", "forgotPassword"),
