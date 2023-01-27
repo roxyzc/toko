@@ -11,8 +11,16 @@ const login = async (
 ): Promise<any> => {
   const { email, password } = req.body;
   try {
-    const findUser = await User.findOne({
-      include: Token,
+    let findUser = await User.findOne({
+      attributes: [
+        "id",
+        "nama",
+        "email",
+        "password",
+        "status",
+        "role",
+        "tokenId",
+      ],
       where: {
         email,
       },
@@ -24,13 +32,13 @@ const login = async (
 
     if (findUser.status !== ("active" as unknown as STATUS))
       return res
-        .status(400)
+        .status(403)
         .json({ success: false, error: { message: "verify first bro" } });
 
     const valid = await findUser.comparePassword?.(password as string);
     if (!valid)
       return res
-        .status(400)
+        .status(401)
         .json({ success: false, error: { message: "password invalid" } });
 
     const { accessToken, refreshToken } = await generateToken(
@@ -44,11 +52,17 @@ const login = async (
       await findUser.save();
     }
 
-    await findUser.reload({ include: Token });
+    findUser = await User.findOne({
+      where: { email },
+      attributes: ["nama", "email"],
+      include: [{ as: "Token", model: Token, attributes: ["accessToken"] }],
+    });
 
-    res
-      .status(200)
-      .json({ success: true, message: "Login successfully", data: findUser });
+    res.status(200).json({
+      success: true,
+      message: "Login successfully",
+      data: findUser,
+    });
   } catch (error) {
     next(error);
   }

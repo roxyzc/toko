@@ -22,6 +22,7 @@ const register = async (
         where: {
           id,
         },
+        attributes: ["nama"],
       });
       if (!findUser) {
         cekId = false;
@@ -34,6 +35,7 @@ const register = async (
       where: {
         email,
       },
+      attributes: ["nama"],
     });
 
     if (findUser) {

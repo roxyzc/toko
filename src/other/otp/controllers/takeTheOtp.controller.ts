@@ -13,6 +13,7 @@ const takeTheOtp = async (
   const { ip, email, type } = req.body;
   try {
     const user = await User.findOne({
+      attributes: ["nama"],
       where: { email, status: "pending" as unknown as STATUS },
     });
     if (!user) {
@@ -46,7 +47,7 @@ const takeTheOtp = async (
     }
 
     if (Number(new Date().getTime()) - Number(otp.updatedAt) < 60000) {
-      return res.status(200).json({
+      return res.status(201).json({
         success: true,
         data: {
           time: otp.updatedAt,

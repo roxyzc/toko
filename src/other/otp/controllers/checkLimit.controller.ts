@@ -13,7 +13,7 @@ const checkLimitBeforeTakeTheOtp = async (
     const findOtp = await Otp.findOne({
       where: { ip, email, type: type as unknown as TYPE },
     });
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ attributes: ["nama"], where: { email } });
     if (!user)
       return res
         .status(400)

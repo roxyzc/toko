@@ -21,6 +21,7 @@ const refreshToken = async (
       process.env.REFRESHTOKENSECRET as string,
       async (error, _decoded): Promise<any> => {
         const user = await User.findOne({
+          attributes: ["id", "role", "tokenId"],
           where: { tokenId: findToken?.getDataValue("tokenId") },
         });
         console.log(user);

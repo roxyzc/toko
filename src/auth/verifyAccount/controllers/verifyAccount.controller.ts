@@ -34,6 +34,7 @@ const verifyAccount = async (
     }
 
     const user = await User.findOne({
+      attributes: ["expiredAt", "status"],
       where: { email: findOtpInTable.getDataValue("email") },
     });
     if (

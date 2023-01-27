@@ -8,7 +8,10 @@ const cekEmail = async (
 ): Promise<any> => {
   const { email } = req.body;
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({
+      attributes: ["nama"],
+      where: { email },
+    });
     if (!user)
       return res
         .status(200)
