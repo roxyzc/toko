@@ -31,9 +31,10 @@ const login = async (
         .json({ success: false, error: { message: "user not found" } });
 
     if (findUser.status !== ("active" as unknown as STATUS))
-      return res
-        .status(403)
-        .json({ success: false, error: { message: "verify first bro" } });
+      return res.status(403).json({
+        success: false,
+        error: { message: "the account has not been verified" },
+      });
 
     const valid = await findUser.comparePassword?.(password as string);
     if (!valid)

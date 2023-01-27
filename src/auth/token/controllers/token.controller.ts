@@ -24,7 +24,6 @@ const refreshToken = async (
           attributes: ["id", "role", "tokenId"],
           where: { tokenId: findToken?.getDataValue("tokenId") },
         });
-        console.log(user);
         if (!user)
           return res
             .status(400)
