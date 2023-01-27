@@ -1,10 +1,17 @@
 import { Router } from "express";
 import routeRegister from "./register/controllers/register.controller";
-import { schema, validateSchema } from "../middleware/verifySchemas.middleware";
+import {
+  schema,
+  validateSchema,
+} from "../middlewares/verifySchemas.middleware";
 import login from "./login/controllers/login.controller";
 import verifyAccount from "./verifyAccount/controllers/verifyAccount.controller";
-import { checkExpiredToken } from "../middleware/verifyToken.middleware";
+import {
+  checkExpiredToken,
+  verifyToken,
+} from "../middlewares/verifyToken.middleware";
 import refreshToken from "./token/controllers/token.controller";
+import logout from "./logout/controllers/logout.controller";
 
 const route: Router = Router();
 
@@ -16,5 +23,6 @@ route.post(
   verifyAccount
 );
 route.get("/refreshToken", checkExpiredToken, refreshToken);
+route.delete("/logout", verifyToken, logout);
 
 export default route;

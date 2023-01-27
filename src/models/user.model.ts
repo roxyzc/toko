@@ -117,7 +117,7 @@ User.prototype.comparePassword = async function (
     .catch(() => false);
 };
 
-User.hasOne(Token, { foreignKey: "tokenId" });
-User.belongsTo(Token, { foreignKey: "tokenId" });
+Token.hasOne(User, { foreignKey: "tokenId" });
+User.belongsTo(Token, { as: "token", foreignKey: "tokenId" });
 
 export default User;

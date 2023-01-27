@@ -56,7 +56,7 @@ const login = async (
     findUser = await User.findOne({
       where: { email },
       attributes: ["nama", "email"],
-      include: [{ as: "Token", model: Token, attributes: ["accessToken"] }],
+      include: [{ model: Token, as: "token", attributes: ["accessToken"] }],
     });
 
     res.status(200).json({

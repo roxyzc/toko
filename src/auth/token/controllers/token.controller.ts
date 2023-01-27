@@ -14,7 +14,6 @@ const refreshToken = async (
 ): Promise<any> => {
   try {
     const { token } = req.USER;
-    console.log(token);
     const findToken = await Token.findOne({ where: { accessToken: token } });
     jwt.verify(
       findToken?.getDataValue("refreshToken") as string,

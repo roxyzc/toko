@@ -2,7 +2,10 @@ import { Router } from "express";
 import takeTheOtp from "./otp/controllers/takeTheOtp.controller";
 import checkLimitBeforeTakeTheOtp from "./otp/controllers/checkLimit.controller";
 import cekEmail from "./email/controllers/cekEmail.controller";
-import { schema, validateSchema } from "../middleware/verifySchemas.middleware";
+import {
+  schema,
+  validateSchema,
+} from "../middlewares/verifySchemas.middleware";
 
 const route: Router = Router();
 route.post("/otp", validateSchema(schema.Other.otp), takeTheOtp);

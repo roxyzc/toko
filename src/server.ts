@@ -2,13 +2,13 @@ import express, { Application } from "express";
 import morgan from "morgan";
 import cors from "cors";
 import { logger } from "./logs/logger.log";
-import { errorHandler, notFound } from "./middleware/errorHandlers.middleware";
+import { errorHandler, notFound } from "./middlewares/errorHandlers.middleware";
 import "dotenv/config";
 import db from "./configs/database.config";
 import routeAuth from "./auth/index";
 import route from "./other/index";
-import cekOtp from "./service/otp.service";
-import cekUser from "./service/user.service";
+import cekOtp from "./services/otp.service";
+import cekUser from "./services/user.service";
 
 db.sync({ alter: true, force: false })
   .then(() => {
