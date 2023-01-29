@@ -37,6 +37,7 @@ const verifyAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, func
                 .json({ success: false, error: { message: "otp expired" } });
         }
         const user = yield user_model_1.default.findOne({
+            attributes: ["expiredAt", "status"],
             where: { email: findOtpInTable.getDataValue("email") },
         });
         if (!user ||

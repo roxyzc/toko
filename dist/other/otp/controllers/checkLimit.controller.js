@@ -20,7 +20,7 @@ const checkLimitBeforeTakeTheOtp = (req, res, next) => __awaiter(void 0, void 0,
         const findOtp = yield otp_model_1.default.findOne({
             where: { ip, email, type: type },
         });
-        const user = yield user_model_1.default.findOne({ where: { email } });
+        const user = yield user_model_1.default.findOne({ attributes: ["nama"], where: { email } });
         if (!user)
             return res
                 .status(400)

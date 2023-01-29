@@ -63,6 +63,7 @@ User.init(
     tokenId: {
       type: DataTypes.STRING,
       allowNull: true,
+      unique: "tokenId",
     },
     createdAt: {
       type: DataTypes.BIGINT(),

@@ -19,8 +19,16 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
     var _a;
     const { email, password } = req.body;
     try {
-        const findUser = yield user_model_1.default.findOne({
-            include: token_model_1.default,
+        let findUser = yield user_model_1.default.findOne({
+            attributes: [
+                "id",
+                "nama",
+                "email",
+                "password",
+                "status",
+                "role",
+                "tokenId",
+            ],
             where: {
                 email,
             },
@@ -30,13 +38,14 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
                 .status(400)
                 .json({ success: false, error: { message: "user not found" } });
         if (findUser.status !== "active")
-            return res
-                .status(400)
-                .json({ success: false, error: { message: "verify first bro" } });
+            return res.status(403).json({
+                success: false,
+                error: { message: "the account has not been verified" },
+            });
         const valid = yield ((_a = findUser.comparePassword) === null || _a === void 0 ? void 0 : _a.call(findUser, password));
         if (!valid)
             return res
-                .status(400)
+                .status(401)
                 .json({ success: false, error: { message: "password invalid" } });
         const { accessToken, refreshToken } = yield (0, generateToken_util_1.generateToken)(findUser.getDataValue("id"), String(findUser.getDataValue("role")));
         if (findUser.tokenId === null || findUser.tokenId === undefined) {
@@ -44,10 +53,16 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             findUser.setDataValue("tokenId", createToken.getDataValue("tokenId"));
             yield findUser.save();
         }
-        yield findUser.reload({ include: token_model_1.default });
-        res
-            .status(200)
-            .json({ success: true, message: "Login successfully", data: findUser });
+        findUser = yield user_model_1.default.findOne({
+            where: { email },
+            attributes: ["nama", "email"],
+            include: [{ model: token_model_1.default, as: "token", attributes: ["accessToken"] }],
+        });
+        res.status(200).json({
+            success: true,
+            message: "Login successfully",
+            data: findUser,
+        });
     }
     catch (error) {
         next(error);

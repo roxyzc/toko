@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import Otp from "../../../models/otp.model";
 import Token from "../../../models/token.model";
 import User from "../../../models/user.model";
 import { STATUS } from "../../../types/default";
@@ -20,6 +21,7 @@ const login = async (
         "status",
         "role",
         "tokenId",
+        "expiredAt",
       ],
       where: {
         email,
@@ -30,11 +32,25 @@ const login = async (
         .status(400)
         .json({ success: false, error: { message: "user not found" } });
 
-    if (findUser.status !== ("active" as unknown as STATUS))
+    if (findUser.status !== ("active" as unknown as STATUS)) {
+      if (
+        Number(findUser.getDataValue("expiredAt")) <
+        Number(new Date().getTime())
+      ) {
+        await User.destroy({
+          where: { email },
+        });
+        await Otp.destroy({ where: { email } });
+        return res.status(410).json({
+          success: false,
+          error: { message: "Expired account please register again" },
+        });
+      }
       return res.status(403).json({
         success: false,
         error: { message: "the account has not been verified" },
       });
+    }
 
     const valid = await findUser.comparePassword?.(password as string);
     if (!valid)

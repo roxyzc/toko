@@ -7,13 +7,13 @@ const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const logger_log_1 = require("./logs/logger.log");
-const errorHandlers_middleware_1 = require("./middleware/errorHandlers.middleware");
+const errorHandlers_middleware_1 = require("./middlewares/errorHandlers.middleware");
 require("dotenv/config");
 const database_config_1 = __importDefault(require("./configs/database.config"));
 const index_1 = __importDefault(require("./auth/index"));
 const index_2 = __importDefault(require("./other/index"));
-const otp_service_1 = __importDefault(require("./service/otp.service"));
-const user_service_1 = __importDefault(require("./service/user.service"));
+const otp_service_1 = __importDefault(require("./services/otp.service"));
+const user_service_1 = __importDefault(require("./services/user.service"));
 database_config_1.default.sync({ alter: true, force: false })
     .then(() => {
     logger_log_1.logger.info("Connection to database successfully");

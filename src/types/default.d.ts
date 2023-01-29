@@ -17,6 +17,11 @@ export enum TYPE {
   forgotPassword,
 }
 
+export enum RSTORE {
+  owner,
+  employee,
+}
+
 declare global {
   namespace NodeJs {
     interface ProcessEnv {

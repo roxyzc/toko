@@ -35,7 +35,7 @@ exports.schema = {
                 .string()
                 .trim()
                 .min(3)
-                .max(20)
+                .max(50)
                 .label("Nama")
                 .required()
                 .regex(/^[a-zA-Z .]+$/i, { invert: false })

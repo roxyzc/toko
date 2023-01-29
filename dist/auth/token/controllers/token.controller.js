@@ -19,13 +19,12 @@ const generateToken_util_1 = require("../../../utils/generateToken.util");
 const refreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { token } = req.USER;
-        console.log(token);
         const findToken = yield token_model_1.default.findOne({ where: { accessToken: token } });
         jsonwebtoken_1.default.verify(findToken === null || findToken === void 0 ? void 0 : findToken.getDataValue("refreshToken"), process.env.REFRESHTOKENSECRET, (error, _decoded) => __awaiter(void 0, void 0, void 0, function* () {
             const user = yield user_model_1.default.findOne({
+                attributes: ["id", "role", "tokenId"],
                 where: { tokenId: findToken === null || findToken === void 0 ? void 0 : findToken.getDataValue("tokenId") },
             });
-            console.log(user);
             if (!user)
                 return res
                     .status(400)

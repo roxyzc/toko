@@ -12,24 +12,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const user_model_1 = __importDefault(require("../../../models/user.model"));
-const cekEmail = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email } = req.body;
+const token_model_1 = __importDefault(require("../../../models/token.model"));
+const logout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    const token = (_b = (_a = req.headers["authorization"]) === null || _a === void 0 ? void 0 : _a.split(" ")[1]) !== null && _b !== void 0 ? _b : "";
     try {
-        const user = yield user_model_1.default.findOne({
-            attributes: ["nama"],
-            where: { email },
-        });
-        if (!user)
-            return res
-                .status(200)
-                .json({ success: true, data: { message: "email available" } });
-        res
-            .status(202)
-            .json({ success: true, data: { message: "email not available" } });
+        yield token_model_1.default.destroy({ where: { accessToken: token } });
+        return res
+            .status(200)
+            .json({ success: true, error: { message: "logout successfully" } });
     }
     catch (error) {
         next(error);
     }
 });
-exports.default = cekEmail;
+exports.default = logout;

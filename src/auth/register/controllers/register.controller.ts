@@ -50,6 +50,7 @@ const register = async (
     });
     if (findUserInTableOtp) {
       t.rollback();
+      await Otp.destroy({ where: { email } });
       return res
         .status(400)
         .json({ success: false, error: { message: "otp already exists" } });
@@ -83,7 +84,9 @@ const register = async (
       t.rollback();
       throw new Error("failed to send email");
     }
-    res.status(200).json({ success: true, data: user });
+    res
+      .status(200)
+      .json({ success: true, data: { message: "Register successfully" } });
   } catch (error: any) {
     t.rollback();
     next(error);

@@ -29,6 +29,7 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
                 where: {
                     id,
                 },
+                attributes: ["nama"],
             });
             if (!findUser) {
                 cekId = false;
@@ -41,6 +42,7 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
             where: {
                 email,
             },
+            attributes: ["nama"],
         });
         if (findUser) {
             t.rollback();

@@ -20,6 +20,7 @@ const takeTheOtp = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     const { ip, email, type } = req.body;
     try {
         const user = yield user_model_1.default.findOne({
+            attributes: ["nama"],
             where: { email, status: "pending" },
         });
         if (!user) {
@@ -47,7 +48,7 @@ const takeTheOtp = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
                 .json({ success: true, data: { message: "otp resent successfully" } });
         }
         if (Number(new Date().getTime()) - Number(otp.updatedAt) < 60000) {
-            return res.status(200).json({
+            return res.status(201).json({
                 success: true,
                 data: {
                     time: otp.updatedAt,

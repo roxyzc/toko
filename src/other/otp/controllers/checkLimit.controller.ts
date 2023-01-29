@@ -13,11 +13,15 @@ const checkLimitBeforeTakeTheOtp = async (
     const findOtp = await Otp.findOne({
       where: { ip, email, type: type as unknown as TYPE },
     });
-    const user = await User.findOne({ attributes: ["nama"], where: { email } });
-    if (!user)
+    const user = await User.findOne({
+      attributes: ["nama", "expiredAt"],
+      where: { email },
+    });
+    if (!user || (!findOtp && user.getDataValue("expiredAt") === null))
       return res
         .status(400)
         .json({ success: false, error: { message: "user not found" } });
+
     if (!findOtp) {
       return res.status(200).json({
         success: false,
@@ -28,10 +32,7 @@ const checkLimitBeforeTakeTheOtp = async (
       });
     }
     if (Number(new Date().getTime()) - Number(findOtp?.updatedAt) < 60000) {
-      return res.status(200).json({
-        success: true,
-        data: { time: findOtp?.updatedAt, message: "<1" },
-      });
+      throw new Error("wait a minute");
     }
 
     res.status(200).json({

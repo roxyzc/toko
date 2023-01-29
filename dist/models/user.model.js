@@ -94,6 +94,6 @@ User.prototype.comparePassword = function (candidatePassword) {
             .catch(() => false);
     });
 };
-User.hasOne(token_model_1.default, { foreignKey: "tokenId" });
-User.belongsTo(token_model_1.default, { foreignKey: "tokenId" });
+token_model_1.default.hasOne(User, { foreignKey: "tokenId" });
+User.belongsTo(token_model_1.default, { as: "token", foreignKey: "tokenId" });
 exports.default = User;
