@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const otp_model_1 = __importDefault(require("../../../models/otp.model"));
 const token_model_1 = __importDefault(require("../../../models/token.model"));
 const user_model_1 = __importDefault(require("../../../models/user.model"));
 const generateToken_util_1 = require("../../../utils/generateToken.util");
@@ -28,6 +29,7 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
                 "status",
                 "role",
                 "tokenId",
+                "expiredAt",
             ],
             where: {
                 email,
@@ -37,11 +39,23 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             return res
                 .status(400)
                 .json({ success: false, error: { message: "user not found" } });
-        if (findUser.status !== "active")
+        if (findUser.status !== "active") {
+            if (Number(findUser.getDataValue("expiredAt")) <
+                Number(new Date().getTime())) {
+                yield user_model_1.default.destroy({
+                    where: { email },
+                });
+                yield otp_model_1.default.destroy({ where: { email } });
+                return res.status(410).json({
+                    success: false,
+                    error: { message: "Expired account please register again" },
+                });
+            }
             return res.status(403).json({
                 success: false,
                 error: { message: "the account has not been verified" },
             });
+        }
         const valid = yield ((_a = findUser.comparePassword) === null || _a === void 0 ? void 0 : _a.call(findUser, password));
         if (!valid)
             return res

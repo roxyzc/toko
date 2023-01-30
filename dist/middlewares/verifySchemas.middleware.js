@@ -136,4 +136,13 @@ exports.schema = {
             }),
         }),
     },
+    store: {
+        create: joi_1.default.object({
+            nameStore: joi_1.default.string().required().label("name store").messages({
+                "string.base": `{{#label}} should be a type of 'String'`,
+                "string.empty": `{{#label}} cannot be an empty field`,
+                "any.required": `{{#label}} is a required field`,
+            }),
+        }),
+    },
 };

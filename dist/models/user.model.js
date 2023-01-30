@@ -50,6 +50,7 @@ User.init({
     tokenId: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
+        unique: "tokenId",
     },
     createdAt: {
         type: sequelize_1.DataTypes.BIGINT(),

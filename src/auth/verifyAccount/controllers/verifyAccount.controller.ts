@@ -2,6 +2,7 @@ import Otp from "../../../models/otp.model";
 import { Request, Response, NextFunction } from "express";
 import User from "../../../models/user.model";
 import { STATUS } from "../../../types/default";
+import { sendEmailAfterVerification } from "../../../utils/sendEmail.util";
 
 const verifyAccount = async (
   req: Request,
@@ -34,7 +35,7 @@ const verifyAccount = async (
     }
 
     const user = await User.findOne({
-      attributes: ["expiredAt", "status"],
+      attributes: ["expiredAt", "status", "nama"],
       where: { email: findOtpInTable.getDataValue("email") },
     });
     if (
@@ -71,6 +72,11 @@ const verifyAccount = async (
     await User.update(
       { status: "active" as unknown as STATUS, expiredAt: null },
       { where: { email: findOtpInTable.getDataValue("email") } }
+    );
+
+    await sendEmailAfterVerification(
+      findOtpInTable.getDataValue("email") as string,
+      user.getDataValue("nama") as string
     );
 
     await Otp.destroy({

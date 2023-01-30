@@ -5,32 +5,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const database_config_1 = __importDefault(require("../configs/database.config"));
-class Otp extends sequelize_1.Model {
+class Store extends sequelize_1.Model {
 }
-Otp.init({
-    otpId: {
-        type: sequelize_1.DataTypes.STRING,
-        defaultValue: (0, sequelize_1.UUIDV4)(),
+Store.init({
+    idStore: {
+        type: sequelize_1.DataTypes.INTEGER,
         primaryKey: true,
-        allowNull: false,
+        allowNull: true,
     },
-    ip: {
+    nameStore: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
-    email: {
+    access: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
-        unique: "email",
+        allowNull: true,
     },
-    otp: {
+    product: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
-        unique: "otp",
+        allowNull: true,
+        unique: "product",
     },
-    type: {
-        type: sequelize_1.DataTypes.ENUM("register", "forgotPassword"),
-        allowNull: false,
+    tax: {
+        type: sequelize_1.DataTypes.BIGINT,
+        allowNull: true,
+    },
+    discount: {
+        type: sequelize_1.DataTypes.BIGINT,
+        allowNull: true,
+    },
+    income: {
+        type: sequelize_1.DataTypes.BIGINT,
+        allowNull: true,
     },
     createdAt: {
         type: sequelize_1.DataTypes.BIGINT,
@@ -40,24 +46,18 @@ Otp.init({
         type: sequelize_1.DataTypes.BIGINT,
         allowNull: true,
     },
-    expiredAt: {
-        type: sequelize_1.DataTypes.BIGINT,
-        allowNull: true,
-    },
 }, {
     hooks: {
-        beforeCreate: (otp) => {
-            const time = Number(new Date().getTime()) + 180000;
+        beforeCreate: (store) => {
             const createdAtAndUpdatedAt = new Date().getTime();
-            otp.expiredAt = Number(time);
-            otp.updatedAt = Number(createdAtAndUpdatedAt);
-            otp.createdAt = Number(createdAtAndUpdatedAt);
+            store.createdAt = Number(createdAtAndUpdatedAt);
+            store.updatedAt = Number(createdAtAndUpdatedAt);
         },
     },
-    timestamps: false,
     sequelize: database_config_1.default,
-    tableName: "Otps",
+    timestamps: false,
+    tableName: "Stores",
     freezeTableName: true,
 });
-Otp.removeAttribute("id");
-exports.default = Otp;
+Store.removeAttribute("id");
+exports.default = Store;

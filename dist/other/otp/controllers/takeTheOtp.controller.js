@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const otp_model_1 = __importDefault(require("../../../models/otp.model"));
 const user_model_1 = __importDefault(require("../../../models/user.model"));
-const generateOtp_util_1 = require("../../../utils/generateOtp.util");
+const generateOtp_util_1 = __importDefault(require("../../../utils/generateOtp.util"));
 const sendEmail_util_1 = require("../../../utils/sendEmail.util");
 const takeTheOtp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { ip, email, type } = req.body;
@@ -31,7 +31,7 @@ const takeTheOtp = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         const otp = yield otp_model_1.default.findOne({
             where: { email, type: type },
         });
-        const createOtp = yield (0, generateOtp_util_1.generateOTP)(4);
+        const createOtp = yield (0, generateOtp_util_1.default)(4);
         const valid = yield (0, sendEmail_util_1.sendEmail)(email, createOtp);
         if (!valid) {
             throw new Error("failed to send email");

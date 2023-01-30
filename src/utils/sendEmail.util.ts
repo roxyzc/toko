@@ -29,3 +29,22 @@ export const sendEmail = (email: string, otp: string): Promise<Boolean> => {
     return Promise.resolve(false);
   }
 };
+
+export const sendEmailAfterVerification = (email: string, nama: string) => {
+  let mailOptions = {
+    from: `"email verification successful"<${process.env.USER}>`,
+    to: email,
+    html: `
+        <center>
+        <h3>halo ${nama} akun anda telah terdaftar di AKBAROXYZC</h3>
+        </center>
+        `,
+  };
+
+  try {
+    transporter().sendMail(mailOptions);
+    return Promise.resolve(true);
+  } catch (error: any) {
+    return Promise.resolve(false);
+  }
+};

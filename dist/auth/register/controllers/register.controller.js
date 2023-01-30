@@ -16,7 +16,7 @@ const short_unique_id_1 = __importDefault(require("short-unique-id"));
 const user_model_1 = __importDefault(require("../../../models/user.model"));
 const otp_model_1 = __importDefault(require("../../../models/otp.model"));
 const database_config_1 = __importDefault(require("../../../configs/database.config"));
-const generateOtp_util_1 = require("../../../utils/generateOtp.util");
+const generateOtp_util_1 = __importDefault(require("../../../utils/generateOtp.util"));
 const sendEmail_util_1 = require("../../../utils/sendEmail.util");
 const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { nama, email, password, ip } = req.body;
@@ -55,6 +55,7 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
         });
         if (findUserInTableOtp) {
             t.rollback();
+            yield otp_model_1.default.destroy({ where: { email } });
             return res
                 .status(400)
                 .json({ success: false, error: { message: "otp already exists" } });
@@ -65,7 +66,7 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
             email: email,
             password: password,
         }, { transaction: t });
-        const otp = yield (0, generateOtp_util_1.generateOTP)(4);
+        const otp = yield (0, generateOtp_util_1.default)(4);
         const createOtp = yield otp_model_1.default.create({
             ip,
             email: user.email,
@@ -78,7 +79,9 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
             t.rollback();
             throw new Error("failed to send email");
         }
-        res.status(200).json({ success: true, data: user });
+        res
+            .status(200)
+            .json({ success: true, data: { message: "Register successfully" } });
     }
     catch (error) {
         t.rollback();

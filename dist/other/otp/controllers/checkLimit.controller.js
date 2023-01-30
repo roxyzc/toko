@@ -20,8 +20,11 @@ const checkLimitBeforeTakeTheOtp = (req, res, next) => __awaiter(void 0, void 0,
         const findOtp = yield otp_model_1.default.findOne({
             where: { ip, email, type: type },
         });
-        const user = yield user_model_1.default.findOne({ attributes: ["nama"], where: { email } });
-        if (!user)
+        const user = yield user_model_1.default.findOne({
+            attributes: ["nama", "expiredAt"],
+            where: { email },
+        });
+        if (!user || (!findOtp && user.getDataValue("expiredAt") === null))
             return res
                 .status(400)
                 .json({ success: false, error: { message: "user not found" } });
@@ -35,10 +38,7 @@ const checkLimitBeforeTakeTheOtp = (req, res, next) => __awaiter(void 0, void 0,
             });
         }
         if (Number(new Date().getTime()) - Number(findOtp === null || findOtp === void 0 ? void 0 : findOtp.updatedAt) < 60000) {
-            return res.status(200).json({
-                success: true,
-                data: { time: findOtp === null || findOtp === void 0 ? void 0 : findOtp.updatedAt, message: "<1" },
-            });
+            throw new Error("wait a minute");
         }
         res.status(200).json({
             success: true,
