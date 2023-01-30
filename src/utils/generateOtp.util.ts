@@ -1,4 +1,4 @@
-export const generateOTP = (num?: Number): any => {
+const generateNumber = (num?: Number): any => {
   let len = num ?? 6;
   let str = "";
   const digits = "0123456789";
@@ -7,3 +7,5 @@ export const generateOTP = (num?: Number): any => {
   }
   return str;
 };
+
+export default generateNumber;

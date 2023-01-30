@@ -3,7 +3,7 @@ import ShortUniqueId from "short-unique-id";
 import User from "../../../models/user.model";
 import Otp from "../../../models/otp.model";
 import db from "../../../configs/database.config";
-import { generateOTP } from "../../../utils/generateOtp.util";
+import generateOTP from "../../../utils/generateOtp.util";
 import { sendEmail } from "../../../utils/sendEmail.util";
 import { TYPE } from "../../../types/default";
 

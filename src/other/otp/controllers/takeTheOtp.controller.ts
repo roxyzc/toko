@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Otp from "../../../models/otp.model";
 import User from "../../../models/user.model";
 import { STATUS, TYPE } from "../../../types/default";
-import { generateOTP } from "../../../utils/generateOtp.util";
+import generateOTP from "../../../utils/generateOtp.util";
 import { sendEmail } from "../../../utils/sendEmail.util";
 
 const takeTheOtp = async (
