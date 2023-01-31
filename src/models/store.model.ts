@@ -32,7 +32,7 @@ Store.init(
       allowNull: false,
     },
     access: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     product: {

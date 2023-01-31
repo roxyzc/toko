@@ -26,12 +26,12 @@ const createStore = async (
         .status(400)
         .json({ success: false, error: { message: "maximum 3" } });
 
-    let id = await generateId(4);
+    let id: string = await generateId(4);
     let valid = true;
     while (valid) {
       const checkId = await Store.findOne({
         where: {
-          idStore: id,
+          idStore: Number(id),
         },
       });
       if (!checkId) {
@@ -41,7 +41,7 @@ const createStore = async (
       }
     }
     await Store.create({
-      idStore: id,
+      idStore: Number(id),
       nameStore,
       access: JSON.stringify([{ userId, role: "owner" as unknown as RSTORE }]),
     });
@@ -67,4 +67,54 @@ const createStore = async (
   }
 };
 
-export default createStore;
+const addAccess = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  const { id } = req.params;
+  const { userId } = req.USER;
+  try {
+    const findUser = await Store.findAndCountAll({
+      where: { access: { [Op.like]: `%${userId}%` } },
+    });
+    if (findUser.count >= 3)
+      return res
+        .status(400)
+        .json({ success: false, error: { message: "maximum 3" } });
+
+    const store = await Store.findOne({
+      where: { idStore: Number(id) },
+      attributes: ["idStore", "nameStore", "access"],
+    });
+
+    if (!store)
+      return res
+        .status(404)
+        .json({ success: false, error: { message: "store not found" } });
+    const access: any[] = Array.from(JSON.parse(store.access));
+
+    access.forEach((value: any) => {
+      if (value.userId == userId) {
+        throw new Error("user already exists");
+      }
+    });
+
+    access.push(
+      JSON.parse(
+        JSON.stringify({ userId, role: "employee" as unknown as RSTORE })
+      )
+    );
+    await Store.update(
+      { access: JSON.stringify(access) },
+      { where: { idStore: id } }
+    );
+    await store.reload();
+    res.status(200).json({ succes: true, data: store });
+  } catch (error: any) {
+    if (error.message == "user already exists") error.status = 409;
+    next(error);
+  }
+};
+
+export { createStore, addAccess };

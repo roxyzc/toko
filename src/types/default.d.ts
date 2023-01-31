@@ -7,8 +7,6 @@ export enum STATUS {
 
 export enum ROLE {
   admin,
-  pemilik,
-  karyawan,
   user,
 }
 
