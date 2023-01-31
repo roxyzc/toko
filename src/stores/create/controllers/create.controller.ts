@@ -46,18 +46,6 @@ const createStore = async (
       access: JSON.stringify([{ userId, role: "owner" as unknown as RSTORE }]),
     });
 
-    // cara update data
-    // const coba = JSON.parse(store?.access);
-    // Array.from(coba);
-    // coba.push(JSON.parse(JSON.stringify({ userId })));
-
-    // await Store.update(
-    //   {
-    //     access: JSON.stringify(coba),
-    //   },
-    //   { where: { nameStore } }
-    // );
-    // console.log(coba);
     res.status(200).json({
       success: true,
       data: { message: "create store successfully" },
@@ -109,8 +97,8 @@ const addAccess = async (
       { access: JSON.stringify(access) },
       { where: { idStore: id } }
     );
-    await store.reload();
-    res.status(200).json({ succes: true, data: store });
+
+    res.status(200).json({ succes: true, data: { message: "success" } });
   } catch (error: any) {
     if (error.message == "user already exists") error.status = 409;
     next(error);
