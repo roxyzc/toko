@@ -25,9 +25,7 @@ const checkLimitBeforeTakeTheOtp = (req, res, next) => __awaiter(void 0, void 0,
             where: { email },
         });
         if (!user || (!findOtp && user.getDataValue("expiredAt") === null))
-            return res
-                .status(400)
-                .json({ success: false, error: { message: "user not found" } });
+            return res.status(400).json({ success: false, error: { message: "user not found" } });
         if (!findOtp) {
             return res.status(200).json({
                 success: false,

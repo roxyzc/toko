@@ -1,13 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import Otp from "../../../models/otp.model";
-import User from "../../../models/user.model";
-import { TYPE } from "../../../types/default";
+import Otp from "@model/otp.model";
+import User from "@model/user.model";
+import { TYPE } from "@tp/default";
 
-const checkLimitBeforeTakeTheOtp = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<any> => {
+const checkLimitBeforeTakeTheOtp = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { ip, email, type } = req.body;
   try {
     const findOtp = await Otp.findOne({
@@ -18,9 +14,7 @@ const checkLimitBeforeTakeTheOtp = async (
       where: { email },
     });
     if (!user || (!findOtp && user.getDataValue("expiredAt") === null))
-      return res
-        .status(400)
-        .json({ success: false, error: { message: "user not found" } });
+      return res.status(400).json({ success: false, error: { message: "user not found" } });
 
     if (!findOtp) {
       return res.status(200).json({

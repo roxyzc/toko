@@ -26,9 +26,7 @@ const refreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
                 where: { tokenId: findToken === null || findToken === void 0 ? void 0 : findToken.getDataValue("tokenId") },
             });
             if (!user)
-                return res
-                    .status(400)
-                    .json({ success: false, error: { message: "user not found" } });
+                return res.status(400).json({ success: false, error: { message: "user not found" } });
             if (error) {
                 const { accessToken, refreshToken } = yield (0, generateToken_util_1.generateToken)(user.getDataValue("id"), user.getDataValue("role"));
                 yield token_model_1.default.update({ accessToken, refreshToken }, { where: { tokenId: user.getDataValue("tokenId") } });

@@ -69,9 +69,7 @@ User.init({
         beforeCreate: (user) => __awaiter(void 0, void 0, void 0, function* () {
             const time = new Date(new Date().setHours(new Date().getHours() + 24));
             const createdAtAndUpdatedAt = new Date().getTime();
-            String(user.status) == "active"
-                ? (user.expiredAt = undefined)
-                : (user.expiredAt = Number(time.getTime()));
+            String(user.status) == "active" ? (user.expiredAt = undefined) : (user.expiredAt = Number(time.getTime()));
             user.createdAt = Number(createdAtAndUpdatedAt);
             user.updatedAt = Number(createdAtAndUpdatedAt);
         }),
@@ -90,9 +88,7 @@ User.init({
 });
 User.prototype.comparePassword = function (candidatePassword) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield bcrypt_1.default
-            .compare(candidatePassword, this.getDataValue("password"))
-            .catch(() => false);
+        return yield bcrypt_1.default.compare(candidatePassword, this.getDataValue("password")).catch(() => false);
     });
 };
 token_model_1.default.hasOne(User, { foreignKey: "tokenId" });

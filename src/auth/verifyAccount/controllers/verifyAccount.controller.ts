@@ -1,79 +1,79 @@
-import Otp from '../../../models/otp.model';
-import { Request, Response, NextFunction } from 'express';
-import User from '../../../models/user.model';
-import { STATUS } from '../../../types/default';
-import { sendEmailAfterVerification } from '../../../utils/sendEmail.util';
+import Otp from "@model/otp.model";
+import { Request, Response, NextFunction } from "express";
+import User from "@model/user.model";
+import { STATUS } from "@tp/default";
+import { sendEmailAfterVerification } from "@util/sendEmail.util";
 
 const verifyAccount = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { otp } = req.body;
   try {
     const findOtpInTable = await Otp.findOne({
-      where: { otp, type: 'register' },
+      where: { otp, type: "register" },
     });
-    if (!findOtpInTable) return res.status(400).json({ success: false, error: { message: 'otp invalid' } });
+    if (!findOtpInTable) return res.status(400).json({ success: false, error: { message: "otp invalid" } });
 
-    if (Number(findOtpInTable.getDataValue('expiredAt')) < Number(new Date().getTime())) {
+    if (Number(findOtpInTable.getDataValue("expiredAt")) < Number(new Date().getTime())) {
       await Otp.destroy({
         where: {
           otp,
-          type: 'register',
+          type: "register",
         },
       });
-      return res.status(400).json({ success: false, error: { message: 'otp expired' } });
+      return res.status(400).json({ success: false, error: { message: "otp expired" } });
     }
 
     const user = await User.findOne({
-      attributes: ['expiredAt', 'status', 'nama'],
-      where: { email: findOtpInTable.getDataValue('email') },
+      attributes: ["expiredAt", "status", "nama"],
+      where: { email: findOtpInTable.getDataValue("email") },
     });
     if (
       !user ||
-      user.getDataValue('expiredAt') === null ||
-      user.getDataValue('status') === ('active' as unknown as STATUS)
+      user.getDataValue("expiredAt") === null ||
+      user.getDataValue("status") === ("active" as unknown as STATUS)
     ) {
       await Otp.destroy({
         where: {
           otp,
-          type: 'register',
+          type: "register",
         },
       });
-      return res.status(200).json({ success: false, error: { message: 'user not found' } });
+      return res.status(200).json({ success: false, error: { message: "user not found" } });
     }
 
-    if (Number(user.getDataValue('expiredAt')) < Number(new Date().getTime())) {
+    if (Number(user.getDataValue("expiredAt")) < Number(new Date().getTime())) {
       await User.destroy({
-        where: { email: findOtpInTable.getDataValue('email') },
+        where: { email: findOtpInTable.getDataValue("email") },
       });
       await Otp.destroy({
         where: {
           otp,
-          type: 'register',
+          type: "register",
         },
       });
-      return res.status(400).json({ success: false, error: { message: 'account expired' } });
+      return res.status(400).json({ success: false, error: { message: "account expired" } });
     }
 
     await User.update(
-      { status: 'active' as unknown as STATUS, expiredAt: null },
-      { where: { email: findOtpInTable.getDataValue('email') } }
+      { status: "active" as unknown as STATUS, expiredAt: null },
+      { where: { email: findOtpInTable.getDataValue("email") } }
     );
 
     await sendEmailAfterVerification(
-      findOtpInTable.getDataValue('email') as string,
-      user.getDataValue('nama') as string
+      findOtpInTable.getDataValue("email") as string,
+      user.getDataValue("nama") as string
     );
 
     await Otp.destroy({
       where: {
         otp,
-        type: 'register',
+        type: "register",
       },
     });
 
     res.status(200).json({
       success: true,
       data: {
-        message: 'verification account successfully',
+        message: "verification account successfully",
       },
     });
   } catch (error) {

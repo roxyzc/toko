@@ -1,15 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import Otp from "../../../models/otp.model";
-import User from "../../../models/user.model";
-import { STATUS, TYPE } from "../../../types/default";
-import generateOTP from "../../../utils/generateOtp.util";
-import { sendEmail } from "../../../utils/sendEmail.util";
+import Otp from "@model/otp.model";
+import User from "@model/user.model";
+import { STATUS, TYPE } from "@tp/default";
+import generateOTP from "@util/generateOtp.util";
+import { sendEmail } from "@util/sendEmail.util";
 
-const takeTheOtp = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<any> => {
+const takeTheOtp = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { ip, email, type } = req.body;
   try {
     const user = await User.findOne({
@@ -17,9 +13,7 @@ const takeTheOtp = async (
       where: { email, status: "pending" as unknown as STATUS },
     });
     if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, error: { message: "user not found" } });
+      return res.status(400).json({ success: false, error: { message: "user not found" } });
     }
 
     const otp = await Otp.findOne({
@@ -27,10 +21,7 @@ const takeTheOtp = async (
     });
 
     const createOtp = await generateOTP(4);
-    const valid: Boolean = await sendEmail(
-      email as string,
-      createOtp as string
-    );
+    const valid: Boolean = await sendEmail(email as string, createOtp as string);
     if (!valid) {
       throw new Error("failed to send email");
     }
@@ -41,9 +32,7 @@ const takeTheOtp = async (
         otp: createOtp,
         ip,
       });
-      return res
-        .status(200)
-        .json({ success: true, data: { message: "otp resent successfully" } });
+      return res.status(200).json({ success: true, data: { message: "otp resent successfully" } });
     }
 
     if (Number(new Date().getTime()) - Number(otp.updatedAt) < 60000) {

@@ -21,12 +21,8 @@ const cekEmail = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
             where: { email },
         });
         if (!user)
-            return res
-                .status(200)
-                .json({ success: true, data: { message: "email available" } });
-        res
-            .status(202)
-            .json({ success: true, data: { message: "email not available" } });
+            return res.status(200).json({ success: true, data: { message: "email available" } });
+        res.status(202).json({ success: true, data: { message: "email not available" } });
     }
     catch (error) {
         next(error);

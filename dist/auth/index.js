@@ -12,9 +12,9 @@ const verifyToken_middleware_1 = require("../middlewares/verifyToken.middleware"
 const token_controller_1 = __importDefault(require("./token/controllers/token.controller"));
 const logout_controller_1 = __importDefault(require("./logout/controllers/logout.controller"));
 const route = (0, express_1.Router)();
-route.post("/register", (0, verifySchemas_middleware_1.validateSchema)(verifySchemas_middleware_1.schema.Auth.register), register_controller_1.default);
-route.post("/login", (0, verifySchemas_middleware_1.validateSchema)(verifySchemas_middleware_1.schema.Auth.login), login_controller_1.default);
-route.post("/verifyAccount", (0, verifySchemas_middleware_1.validateSchema)(verifySchemas_middleware_1.schema.Auth.verifyOtp), verifyAccount_controller_1.default);
-route.get("/refreshToken", verifyToken_middleware_1.checkExpiredToken, token_controller_1.default);
-route.delete("/logout", verifyToken_middleware_1.verifyToken, logout_controller_1.default);
+route.post('/register', (0, verifySchemas_middleware_1.validateSchema)(verifySchemas_middleware_1.schema.Auth.register), register_controller_1.default);
+route.post('/login', (0, verifySchemas_middleware_1.validateSchema)(verifySchemas_middleware_1.schema.Auth.login), login_controller_1.default);
+route.post('/verifyAccount', (0, verifySchemas_middleware_1.validateSchema)(verifySchemas_middleware_1.schema.Auth.verifyOtp), verifyAccount_controller_1.default);
+route.get('/refreshToken', verifyToken_middleware_1.checkExpiredToken, token_controller_1.default);
+route.delete('/logout', verifyToken_middleware_1.verifyToken, logout_controller_1.default);
 exports.default = route;

@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { Op } from "sequelize";
-import Store from "../../../models/store.model";
-import { RSTORE } from "../../../types/default";
-import generateId from "../../../utils/generateOtp.util";
+import Store from "@model/store.model";
+import { RSTORE } from "@tp/default";
+import generateId from "@util/generateOtp.util";
 
 const createStore = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { nameStore } = req.body;

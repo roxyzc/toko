@@ -18,7 +18,7 @@ Store.init({
         allowNull: false,
     },
     access: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.TEXT,
         allowNull: true,
     },
     product: {
@@ -48,7 +48,7 @@ Store.init({
     },
 }, {
     hooks: {
-        beforeCreate: (store) => {
+        beforeCreate: store => {
             const createdAtAndUpdatedAt = new Date().getTime();
             store.createdAt = Number(createdAtAndUpdatedAt);
             store.updatedAt = Number(createdAtAndUpdatedAt);

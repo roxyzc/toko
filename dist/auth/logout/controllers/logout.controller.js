@@ -18,9 +18,7 @@ const logout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     const token = (_b = (_a = req.headers["authorization"]) === null || _a === void 0 ? void 0 : _a.split(" ")[1]) !== null && _b !== void 0 ? _b : "";
     try {
         yield token_model_1.default.destroy({ where: { accessToken: token } });
-        return res
-            .status(200)
-            .json({ success: true, error: { message: "logout successfully" } });
+        return res.status(200).json({ success: true, error: { message: "logout successfully" } });
     }
     catch (error) {
         next(error);

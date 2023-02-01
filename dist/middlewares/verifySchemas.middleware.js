@@ -56,24 +56,13 @@ exports.schema = {
                 "string.empty": `{{#label}} cannot be an empty field`,
                 "any.required": `{{#label}} is a required field`,
             }),
-            password: joi_1.default
-                .string()
-                .min(8)
-                .max(30)
-                .label("Password")
-                .required()
-                .messages({
+            password: joi_1.default.string().min(8).max(30).label("Password").required().messages({
                 "string.empty": `{{#label}} cannot be an empty field`,
                 "string.min": `{{#label}} should have a minimum length of {#limit}`,
                 "string.max": `{{#label}} must be less than or equal to {#limit}`,
                 "any.required": `{{#label}} is a required field`,
             }),
-            confirmPassword: joi_1.default
-                .any()
-                .equal(joi_1.default.ref("password"))
-                .required()
-                .label("Confirm password")
-                .messages({
+            confirmPassword: joi_1.default.any().equal(joi_1.default.ref("password")).required().label("Confirm password").messages({
                 "any.only": "{{#label}} does not match",
             }),
         }),
@@ -83,13 +72,7 @@ exports.schema = {
                 "string.empty": `{{#label}} cannot be an empty field`,
                 "any.required": `{{#label}} is a required field`,
             }),
-            password: joi_1.default
-                .string()
-                .min(8)
-                .max(30)
-                .label("Password")
-                .required()
-                .messages({
+            password: joi_1.default.string().min(8).max(30).label("Password").required().messages({
                 "string.empty": `{{#label}} cannot be an empty field`,
                 "string.min": `{{#label}} should have a minimum length of {#limit}`,
                 "string.max": `{{#label}} must be less than or equal to {#limit}`,
@@ -123,12 +106,7 @@ exports.schema = {
                 "string.empty": `{{#label}} cannot be an empty field`,
                 "any.required": `{{#label}} is a required field`,
             }),
-            type: joi_1.default
-                .string()
-                .valid("register", "forgotPassword")
-                .required()
-                .label("Type")
-                .messages({
+            type: joi_1.default.string().valid("register", "forgotPassword").required().label("Type").messages({
                 "any.only": `{{#label}} {#value} is missing`,
                 "string.base": `{{#label}} should be a type of 'String'`,
                 "string.empty": `{{#label}} cannot be an empty field`,

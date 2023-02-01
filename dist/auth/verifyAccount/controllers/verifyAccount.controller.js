@@ -22,20 +22,15 @@ const verifyAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             where: { otp, type: "register" },
         });
         if (!findOtpInTable)
-            return res
-                .status(400)
-                .json({ success: false, error: { message: "otp invalid" } });
-        if (Number(findOtpInTable.getDataValue("expiredAt")) <
-            Number(new Date().getTime())) {
+            return res.status(400).json({ success: false, error: { message: "otp invalid" } });
+        if (Number(findOtpInTable.getDataValue("expiredAt")) < Number(new Date().getTime())) {
             yield otp_model_1.default.destroy({
                 where: {
                     otp,
                     type: "register",
                 },
             });
-            return res
-                .status(400)
-                .json({ success: false, error: { message: "otp expired" } });
+            return res.status(400).json({ success: false, error: { message: "otp expired" } });
         }
         const user = yield user_model_1.default.findOne({
             attributes: ["expiredAt", "status", "nama"],
@@ -50,9 +45,7 @@ const verifyAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, func
                     type: "register",
                 },
             });
-            return res
-                .status(200)
-                .json({ success: false, error: { message: "user not found" } });
+            return res.status(200).json({ success: false, error: { message: "user not found" } });
         }
         if (Number(user.getDataValue("expiredAt")) < Number(new Date().getTime())) {
             yield user_model_1.default.destroy({
@@ -64,9 +57,7 @@ const verifyAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, func
                     type: "register",
                 },
             });
-            return res
-                .status(400)
-                .json({ success: false, error: { message: "account expired" } });
+            return res.status(400).json({ success: false, error: { message: "account expired" } });
         }
         yield user_model_1.default.update({ status: "active", expiredAt: null }, { where: { email: findOtpInTable.getDataValue("email") } });
         yield (0, sendEmail_util_1.sendEmailAfterVerification)(findOtpInTable.getDataValue("email"), user.getDataValue("nama"));

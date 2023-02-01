@@ -46,7 +46,7 @@ Otp.init({
     },
 }, {
     hooks: {
-        beforeCreate: (otp) => {
+        beforeCreate: otp => {
             const time = Number(new Date().getTime()) + 180000;
             const createdAtAndUpdatedAt = new Date().getTime();
             otp.expiredAt = Number(time);

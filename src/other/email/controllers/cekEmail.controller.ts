@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import User from "../../../models/user.model";
+import User from "@model/user.model";
 
 const cekEmail = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { email } = req.body;

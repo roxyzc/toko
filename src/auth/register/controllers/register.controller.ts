@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
-import ShortUniqueId from 'short-unique-id';
-import User from '../../../models/user.model';
-import Otp from '../../../models/otp.model';
-import db from '../../../configs/database.config';
-import generateOTP from '../../../utils/generateOtp.util';
-import { sendEmail } from '../../../utils/sendEmail.util';
-import { TYPE } from '../../../types/default';
+import { NextFunction, Request, Response } from "express";
+import ShortUniqueId from "short-unique-id";
+import User from "@model/user.model";
+import Otp from "@model/otp.model";
+import db from "@config/database.config";
+import generateOTP from "@util/generateOtp.util";
+import { sendEmail } from "@util/sendEmail.util";
+import { TYPE } from "@tp/default";
 
 const register = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { nama, email, password, ip } = req.body;
@@ -18,7 +18,7 @@ const register = async (req: Request, res: Response, next: NextFunction): Promis
         where: {
           id,
         },
-        attributes: ['nama'],
+        attributes: ["nama"],
       });
       if (!findUser) {
         cekId = false;
@@ -31,21 +31,21 @@ const register = async (req: Request, res: Response, next: NextFunction): Promis
       where: {
         email,
       },
-      attributes: ['nama'],
+      attributes: ["nama"],
     });
 
     if (findUser) {
       t.rollback();
-      return res.status(400).json({ success: false, error: { message: 'user already exists' } });
+      return res.status(400).json({ success: false, error: { message: "user already exists" } });
     }
 
     const findUserInTableOtp = await Otp.findOne({
-      where: { email, type: 'register' },
+      where: { email, type: "register" },
     });
     if (findUserInTableOtp) {
       t.rollback();
       await Otp.destroy({ where: { email } });
-      return res.status(400).json({ success: false, error: { message: 'otp already exists' } });
+      return res.status(400).json({ success: false, error: { message: "otp already exists" } });
     }
     const user = await User.create(
       {
@@ -63,7 +63,7 @@ const register = async (req: Request, res: Response, next: NextFunction): Promis
         ip,
         email: user.email as string,
         otp: otp as string,
-        type: 'register' as unknown as TYPE,
+        type: "register" as unknown as TYPE,
       },
       { transaction: t }
     );
@@ -71,9 +71,9 @@ const register = async (req: Request, res: Response, next: NextFunction): Promis
     const valid: Boolean = await sendEmail(email as string, createOtp.otp as string);
     if (!valid) {
       t.rollback();
-      throw new Error('failed to send email');
+      throw new Error("failed to send email");
     }
-    res.status(200).json({ success: true, data: { message: 'Register successfully' } });
+    res.status(200).json({ success: true, data: { message: "Register successfully" } });
   } catch (error: any) {
     t.rollback();
     next(error);

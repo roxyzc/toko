@@ -46,9 +46,7 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
         });
         if (findUser) {
             t.rollback();
-            return res
-                .status(400)
-                .json({ success: false, error: { message: "user already exists" } });
+            return res.status(400).json({ success: false, error: { message: "user already exists" } });
         }
         const findUserInTableOtp = yield otp_model_1.default.findOne({
             where: { email, type: "register" },
@@ -56,9 +54,7 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
         if (findUserInTableOtp) {
             t.rollback();
             yield otp_model_1.default.destroy({ where: { email } });
-            return res
-                .status(400)
-                .json({ success: false, error: { message: "otp already exists" } });
+            return res.status(400).json({ success: false, error: { message: "otp already exists" } });
         }
         const user = yield user_model_1.default.create({
             id,
@@ -79,9 +75,7 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
             t.rollback();
             throw new Error("failed to send email");
         }
-        res
-            .status(200)
-            .json({ success: true, data: { message: "Register successfully" } });
+        res.status(200).json({ success: true, data: { message: "Register successfully" } });
     }
     catch (error) {
         t.rollback();

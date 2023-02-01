@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import Otp from "../../../models/otp.model";
-import Token from "../../../models/token.model";
-import User from "../../../models/user.model";
-import { STATUS } from "../../../types/default";
-import { generateToken } from "../../../utils/generateToken.util";
+import Otp from "@model/otp.model";
+import Token from "@model/token.model";
+import User from "@model/user.model";
+import { STATUS } from "@tp/default";
+import { generateToken } from "@util/generateToken.util";
 
 const login = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { email, password } = req.body;
