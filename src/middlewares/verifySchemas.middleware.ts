@@ -42,26 +42,15 @@ export const schema = {
         "string.empty": `{{#label}} cannot be an empty field`,
         "any.required": `{{#label}} is a required field`,
       }),
-      password: joi
-        .string()
-        .min(8)
-        .max(30)
-        .label("Password")
-        .required()
-        .messages({
-          "string.empty": `{{#label}} cannot be an empty field`,
-          "string.min": `{{#label}} should have a minimum length of {#limit}`,
-          "string.max": `{{#label}} must be less than or equal to {#limit}`,
-          "any.required": `{{#label}} is a required field`,
-        }),
-      confirmPassword: joi
-        .any()
-        .equal(joi.ref("password"))
-        .required()
-        .label("Confirm password")
-        .messages({
-          "any.only": "{{#label}} does not match",
-        }),
+      password: joi.string().min(8).max(30).label("Password").required().messages({
+        "string.empty": `{{#label}} cannot be an empty field`,
+        "string.min": `{{#label}} should have a minimum length of {#limit}`,
+        "string.max": `{{#label}} must be less than or equal to {#limit}`,
+        "any.required": `{{#label}} is a required field`,
+      }),
+      confirmPassword: joi.any().equal(joi.ref("password")).required().label("Confirm password").messages({
+        "any.only": "{{#label}} does not match",
+      }),
     }),
     login: joi.object({
       email: joi.string().email().label("Email").required().messages({
@@ -69,18 +58,12 @@ export const schema = {
         "string.empty": `{{#label}} cannot be an empty field`,
         "any.required": `{{#label}} is a required field`,
       }),
-      password: joi
-        .string()
-        .min(8)
-        .max(30)
-        .label("Password")
-        .required()
-        .messages({
-          "string.empty": `{{#label}} cannot be an empty field`,
-          "string.min": `{{#label}} should have a minimum length of {#limit}`,
-          "string.max": `{{#label}} must be less than or equal to {#limit}`,
-          "any.required": `{{#label}} is a required field`,
-        }),
+      password: joi.string().min(8).max(30).label("Password").required().messages({
+        "string.empty": `{{#label}} cannot be an empty field`,
+        "string.min": `{{#label}} should have a minimum length of {#limit}`,
+        "string.max": `{{#label}} must be less than or equal to {#limit}`,
+        "any.required": `{{#label}} is a required field`,
+      }),
     }),
     verifyOtp: joi.object({
       otp: joi.string().label("Otp").required().messages({
@@ -109,17 +92,12 @@ export const schema = {
         "string.empty": `{{#label}} cannot be an empty field`,
         "any.required": `{{#label}} is a required field`,
       }),
-      type: joi
-        .string()
-        .valid("register", "forgotPassword")
-        .required()
-        .label("Type")
-        .messages({
-          "any.only": `{{#label}} {#value} is missing`,
-          "string.base": `{{#label}} should be a type of 'String'`,
-          "string.empty": `{{#label}} cannot be an empty field`,
-          "any.required": `{{#label}} is a required field`,
-        }),
+      type: joi.string().valid("register", "forgotPassword").required().label("Type").messages({
+        "any.only": `{{#label}} {#value} is missing`,
+        "string.base": `{{#label}} should be a type of 'String'`,
+        "string.empty": `{{#label}} cannot be an empty field`,
+        "any.required": `{{#label}} is a required field`,
+      }),
     }),
   },
   store: {

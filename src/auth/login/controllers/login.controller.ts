@@ -5,38 +5,19 @@ import User from "../../../models/user.model";
 import { STATUS } from "../../../types/default";
 import { generateToken } from "../../../utils/generateToken.util";
 
-const login = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<any> => {
+const login = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { email, password } = req.body;
   try {
     let findUser = await User.findOne({
-      attributes: [
-        "id",
-        "nama",
-        "email",
-        "password",
-        "status",
-        "role",
-        "tokenId",
-        "expiredAt",
-      ],
+      attributes: ["id", "nama", "email", "password", "status", "role", "tokenId", "expiredAt"],
       where: {
         email,
       },
     });
-    if (!findUser)
-      return res
-        .status(400)
-        .json({ success: false, error: { message: "user not found" } });
+    if (!findUser) return res.status(400).json({ success: false, error: { message: "user not found" } });
 
     if (findUser.status !== ("active" as unknown as STATUS)) {
-      if (
-        Number(findUser.getDataValue("expiredAt")) <
-        Number(new Date().getTime())
-      ) {
+      if (Number(findUser.getDataValue("expiredAt")) < Number(new Date().getTime())) {
         await User.destroy({
           where: { email },
         });
@@ -53,10 +34,7 @@ const login = async (
     }
 
     const valid = await findUser.comparePassword?.(password as string);
-    if (!valid)
-      return res
-        .status(401)
-        .json({ success: false, error: { message: "password invalid" } });
+    if (!valid) return res.status(401).json({ success: false, error: { message: "password invalid" } });
 
     const { accessToken, refreshToken } = await generateToken(
       findUser.getDataValue("id") as string,

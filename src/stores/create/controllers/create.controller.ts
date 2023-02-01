@@ -4,11 +4,7 @@ import Store from "../../../models/store.model";
 import { RSTORE } from "../../../types/default";
 import generateId from "../../../utils/generateOtp.util";
 
-const createStore = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<any> => {
+const createStore = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { nameStore } = req.body;
   const { userId } = req.USER;
   try {
@@ -21,10 +17,7 @@ const createStore = async (
       attributes: ["idStore", "nameStore"],
     });
 
-    if (store.count === 3)
-      return res
-        .status(400)
-        .json({ success: false, error: { message: "maximum 3" } });
+    if (store.count === 3) return res.status(400).json({ success: false, error: { message: "maximum 3" } });
 
     let id: string = await generateId(4);
     let valid = true;
@@ -55,31 +48,22 @@ const createStore = async (
   }
 };
 
-const addAccess = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<any> => {
+const addAccess = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { id } = req.params;
   const { userId } = req.USER;
   try {
     const findUser = await Store.findAndCountAll({
       where: { access: { [Op.like]: `%${userId}%` } },
+      attributes: ["idStore", "nameStore"],
     });
-    if (findUser.count >= 3)
-      return res
-        .status(400)
-        .json({ success: false, error: { message: "maximum 3" } });
+    if (findUser.count >= 3) return res.status(400).json({ success: false, error: { message: "maximum 3" } });
 
     const store = await Store.findOne({
       where: { idStore: Number(id) },
       attributes: ["idStore", "nameStore", "access"],
     });
 
-    if (!store)
-      return res
-        .status(404)
-        .json({ success: false, error: { message: "store not found" } });
+    if (!store) return res.status(404).json({ success: false, error: { message: "store not found" } });
     const access: any[] = Array.from(JSON.parse(store.access));
 
     access.forEach((value: any) => {
@@ -88,15 +72,8 @@ const addAccess = async (
       }
     });
 
-    access.push(
-      JSON.parse(
-        JSON.stringify({ userId, role: "employee" as unknown as RSTORE })
-      )
-    );
-    await Store.update(
-      { access: JSON.stringify(access) },
-      { where: { idStore: id } }
-    );
+    access.push(JSON.parse(JSON.stringify({ userId, role: "employee" as unknown as RSTORE })));
+    await Store.update({ access: JSON.stringify(access) }, { where: { idStore: id } });
 
     res.status(200).json({ succes: true, data: { message: "success" } });
   } catch (error: any) {

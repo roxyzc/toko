@@ -80,22 +80,17 @@ User.init(
   },
   {
     hooks: {
-      beforeCreate: async (user) => {
+      beforeCreate: async user => {
         const time = new Date(new Date().setHours(new Date().getHours() + 24));
         const createdAtAndUpdatedAt = new Date().getTime();
-        String(user.status) == "active"
-          ? (user.expiredAt = undefined)
-          : (user.expiredAt = Number(time.getTime()));
+        String(user.status) == "active" ? (user.expiredAt = undefined) : (user.expiredAt = Number(time.getTime()));
         user.createdAt = Number(createdAtAndUpdatedAt);
         user.updatedAt = Number(createdAtAndUpdatedAt);
       },
-      beforeSave: async (user) => {
+      beforeSave: async user => {
         if (user.changed("password")) {
           const salt = await bcrypt.genSalt(Number(process.env.SALT));
-          const hashPassword = await bcrypt.hash(
-            user.getDataValue("password") as string,
-            salt
-          );
+          const hashPassword = await bcrypt.hash(user.getDataValue("password") as string, salt);
           user.password = hashPassword;
         }
       },
@@ -107,15 +102,8 @@ User.init(
   }
 );
 
-User.prototype.comparePassword = async function (
-  candidatePassword: string
-): Promise<Boolean> {
-  return await bcrypt
-    .compare(
-      candidatePassword as string,
-      this.getDataValue("password") as string
-    )
-    .catch(() => false);
+User.prototype.comparePassword = async function (candidatePassword: string): Promise<Boolean> {
+  return await bcrypt.compare(candidatePassword as string, this.getDataValue("password") as string).catch(() => false);
 };
 
 Token.hasOne(User, { foreignKey: "tokenId" });

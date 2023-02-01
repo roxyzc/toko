@@ -63,7 +63,7 @@ Store.init(
   },
   {
     hooks: {
-      beforeCreate: (store) => {
+      beforeCreate: store => {
         const createdAtAndUpdatedAt = new Date().getTime();
         store.createdAt = Number(createdAtAndUpdatedAt);
         store.updatedAt = Number(createdAtAndUpdatedAt);

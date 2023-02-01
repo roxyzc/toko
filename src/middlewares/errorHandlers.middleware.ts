@@ -6,12 +6,7 @@ export const notFound = (_req: Request, _res: Response, next: NextFunction) => {
   next(new NotFound());
 };
 
-export const errorHandler: ErrorRequestHandler = (
-  error: any,
-  _req,
-  res,
-  _next
-) => {
+export const errorHandler: ErrorRequestHandler = (error: any, _req, res, _next) => {
   logger.error(error.message);
   res.status(error.status || 500).json({
     success: false,
