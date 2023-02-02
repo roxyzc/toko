@@ -5,7 +5,6 @@ export interface IStoreModel {
   idStore?: Number;
   nameStore: string;
   access?: any;
-  product?: string;
   tax?: Number;
   discount?: Number;
   income?: Number;
@@ -34,11 +33,6 @@ Store.init(
     access: {
       type: DataTypes.TEXT,
       allowNull: true,
-    },
-    product: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      unique: "product",
     },
     tax: {
       type: DataTypes.BIGINT,
