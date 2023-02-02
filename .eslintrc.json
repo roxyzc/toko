@@ -10,6 +10,7 @@
     "plugin:import/recommended",
     "prettier"
   ],
+  "parser": "@typescript-eslint/parser",
   "overrides": [],
   "plugins": ["@typescript-eslint", "prettier", "import", "promise"],
   "parserOptions": {

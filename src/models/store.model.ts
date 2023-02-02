@@ -2,7 +2,7 @@ import { Model, DataTypes } from "sequelize";
 import db from "../configs/database.config";
 
 export interface IStoreModel {
-  idStore?: Number;
+  idStore?: string;
   nameStore: string;
   access?: any;
   tax?: Number;
@@ -22,7 +22,7 @@ class Store extends Model<IStoreModel> {
 Store.init(
   {
     idStore: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       primaryKey: true,
       allowNull: true,
     },

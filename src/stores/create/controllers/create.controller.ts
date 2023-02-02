@@ -3,10 +3,12 @@ import { Op } from "sequelize";
 import Store from "@model/store.model";
 import { RSTORE } from "@tp/default";
 import generateId from "@util/generateOtp.util";
+import hashids from "hashids";
 
 const createStore = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { nameStore } = req.body;
   const { userId } = req.USER;
+  const hash = new hashids(process.env.SALTHASHIDS as string, 16);
   try {
     const store = await Store.findAndCountAll({
       where: {
@@ -24,7 +26,7 @@ const createStore = async (req: Request, res: Response, next: NextFunction): Pro
     while (valid) {
       const checkId = await Store.findOne({
         where: {
-          idStore: Number(id),
+          idStore: hash.encode(id),
         },
       });
       if (!checkId) {
@@ -34,7 +36,7 @@ const createStore = async (req: Request, res: Response, next: NextFunction): Pro
       }
     }
     await Store.create({
-      idStore: Number(id),
+      idStore: hash.encode(id),
       nameStore,
       access: JSON.stringify([{ userId, role: "owner" as unknown as RSTORE }]),
     });
@@ -59,7 +61,7 @@ const addAccess = async (req: Request, res: Response, next: NextFunction): Promi
     if (findUser.count >= 3) return res.status(400).json({ success: false, error: { message: "maximum 3" } });
 
     const store = await Store.findOne({
-      where: { idStore: Number(id) },
+      where: { idStore: id },
       attributes: ["idStore", "nameStore", "access"],
     });
 

@@ -32,6 +32,7 @@ declare global {
       ACCESSTOKENSECRET: string;
       REFRESHTOKENSECRET: string;
       SALT: number;
+      SALTHASHIDS: string;
       USER: string;
       PASS: string;
     }

@@ -20,8 +20,7 @@ Product.init(
       defaultValue: UUIDV4(),
     },
     idStore: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     nameProduct: {
