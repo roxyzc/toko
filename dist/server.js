@@ -11,8 +11,9 @@ const errorHandlers_middleware_1 = require("./middlewares/errorHandlers.middlewa
 require("dotenv/config");
 const database_config_1 = __importDefault(require("./configs/database.config"));
 const index_1 = __importDefault(require("./auth/index"));
-const index_2 = __importDefault(require("./other/index"));
-const index_3 = __importDefault(require("./stores/index"));
+const index_2 = __importDefault(require("./stores/index"));
+const index_3 = __importDefault(require("./products/index"));
+const index_4 = __importDefault(require("./other/index"));
 const otp_service_1 = __importDefault(require("./services/otp.service"));
 const user_service_1 = __importDefault(require("./services/user.service"));
 database_config_1.default.sync({ alter: true, force: false })
@@ -39,7 +40,8 @@ otp_service_1.default;
 user_service_1.default;
 app.use("/api/auth", index_1.default);
 app.use("/api", index_2.default);
-app.use("/api/store", index_3.default);
+app.use("/api/product", index_3.default);
+app.use("/api", index_4.default);
 app.use(errorHandlers_middleware_1.notFound);
 app.use(errorHandlers_middleware_1.errorHandler);
 app.listen(process.env.PORT, () => {

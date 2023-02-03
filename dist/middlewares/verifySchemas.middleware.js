@@ -87,6 +87,19 @@ exports.schema = {
             }),
         }),
     },
+    Product: {
+        add: joi_1.default.object({
+            nameProduct: joi_1.default.string().label("Name Product").trim().min(2).required().messages({
+                "string.base": `{{#label}} should be a type of 'text'`,
+                "string.empty": `{{#label}} cannot be an empty field`,
+                "string.min": `{{#label}} should have a minimum length of {#limit}`,
+                "any.required": `{{#label}} is a required field`,
+            }),
+            price: joi_1.default.number().integer().label("Price").required().min(1).messages({
+                "any.required": `{{#label}} is a required field`,
+            }),
+        }),
+    },
     Other: {
         cekEmail: joi_1.default.object({
             email: joi_1.default.string().email().label("Email").required().messages({
@@ -116,8 +129,15 @@ exports.schema = {
     },
     store: {
         create: joi_1.default.object({
-            nameStore: joi_1.default.string().required().label("name store").messages({
+            nameStore: joi_1.default.string().required().label("Name store").messages({
                 "string.base": `{{#label}} should be a type of 'String'`,
+                "string.empty": `{{#label}} cannot be an empty field`,
+                "any.required": `{{#label}} is a required field`,
+            }),
+        }),
+        addC: joi_1.default.object({
+            email: joi_1.default.string().email().required().label("Email").messages({
+                "string.email": `'{{#label}}' in Email must be a valid {{#label}}`,
                 "string.empty": `{{#label}} cannot be an empty field`,
                 "any.required": `{{#label}} is a required field`,
             }),

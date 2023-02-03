@@ -115,8 +115,15 @@ export const schema = {
   },
   store: {
     create: joi.object({
-      nameStore: joi.string().required().label("name store").messages({
+      nameStore: joi.string().required().label("Name store").messages({
         "string.base": `{{#label}} should be a type of 'String'`,
+        "string.empty": `{{#label}} cannot be an empty field`,
+        "any.required": `{{#label}} is a required field`,
+      }),
+    }),
+    addC: joi.object({
+      email: joi.string().email().required().label("Email").messages({
+        "string.email": `'{{#label}}' in Email must be a valid {{#label}}`,
         "string.empty": `{{#label}} cannot be an empty field`,
         "any.required": `{{#label}} is a required field`,
       }),

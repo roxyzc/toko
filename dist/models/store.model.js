@@ -9,7 +9,7 @@ class Store extends sequelize_1.Model {
 }
 Store.init({
     idStore: {
-        type: sequelize_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.STRING,
         primaryKey: true,
         allowNull: true,
     },
@@ -20,11 +20,6 @@ Store.init({
     access: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true,
-    },
-    product: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
-        unique: "product",
     },
     tax: {
         type: sequelize_1.DataTypes.BIGINT,
