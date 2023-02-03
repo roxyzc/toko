@@ -73,6 +73,19 @@ export const schema = {
       }),
     }),
   },
+  Product: {
+    add: joi.object({
+      nameProduct: joi.string().label("Name Product").trim().min(2).required().messages({
+        "string.base": `{{#label}} should be a type of 'text'`,
+        "string.empty": `{{#label}} cannot be an empty field`,
+        "string.min": `{{#label}} should have a minimum length of {#limit}`,
+        "any.required": `{{#label}} is a required field`,
+      }),
+      price: joi.number().integer().label("Price").required().min(1).messages({
+        "any.required": `{{#label}} is a required field`,
+      }),
+    }),
+  },
   Other: {
     cekEmail: joi.object({
       email: joi.string().email().label("Email").required().messages({

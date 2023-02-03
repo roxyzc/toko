@@ -40,8 +40,7 @@ Product.init(
   }
 );
 
+Product.removeAttribute("id");
 Store.hasOne(Product, { foreignKey: "idStore" });
 Product.belongsTo(Store, { as: "store", foreignKey: "idStore" });
-
-Product.removeAttribute("id");
 export default Product;

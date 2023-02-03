@@ -6,8 +6,9 @@ import { errorHandler, notFound } from "./middlewares/errorHandlers.middleware";
 import "dotenv/config";
 import db from "./configs/database.config";
 import routeAuth from "./auth/index";
-import route from "./other/index";
 import routeStore from "./stores/index";
+import routeProduct from "./products/index";
+import route from "./other/index";
 import cekOtp from "./services/otp.service";
 import cekUser from "./services/user.service";
 
@@ -39,8 +40,9 @@ cekOtp;
 cekUser;
 
 app.use("/api/auth", routeAuth);
+app.use("/api", routeStore);
+app.use("/api/product", routeProduct);
 app.use("/api", route);
-app.use("/api/", routeStore);
 app.use(notFound);
 app.use(errorHandler);
 
