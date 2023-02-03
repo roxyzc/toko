@@ -3,8 +3,8 @@ import db from "../configs/database.config";
 import Store from "./store.model";
 
 export interface IProductModel {
-  idProduct: String;
-  idStore: Number;
+  idProduct?: String;
+  idStore: string;
   nameProduct: string;
   price: Number;
 }

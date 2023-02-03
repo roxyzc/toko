@@ -40,7 +40,7 @@ cekUser;
 
 app.use("/api/auth", routeAuth);
 app.use("/api", route);
-app.use("/api/store", routeStore);
+app.use("/api/", routeStore);
 app.use(notFound);
 app.use(errorHandler);
 
