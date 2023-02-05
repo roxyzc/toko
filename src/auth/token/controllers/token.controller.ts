@@ -13,20 +13,24 @@ const refreshToken = async (req: Request, res: Response, next: NextFunction): Pr
       process.env.REFRESHTOKENSECRET as string,
       async (error, _decoded): Promise<any> => {
         const user = await User.findOne({
-          attributes: ["id", "role", "tokenId"],
+          attributes: ["id", "email", "nama", "role", "tokenId"],
           where: { tokenId: findToken?.getDataValue("tokenId") },
         });
         if (!user) return res.status(400).json({ success: false, error: { message: "user not found" } });
         if (error) {
           const { accessToken, refreshToken } = await generateToken(
-            user.getDataValue("id") as string,
+            user.getDataValue("id"),
+            user.getDataValue("email"),
+            user.getDataValue("nama"),
             user.getDataValue("role") as unknown as string
           );
           await Token.update({ accessToken, refreshToken }, { where: { tokenId: user.getDataValue("tokenId") } });
           return res.status(200).json({ success: true, data: { accessToken } });
         }
         const { accessToken } = await generateAccessToken(
-          user.getDataValue("id") as string,
+          user.getDataValue("id"),
+          user.getDataValue("email"),
+          user.getDataValue("nama"),
           user.getDataValue("role") as unknown as string
         );
         await Token.update({ accessToken }, { where: { tokenId: user.getDataValue("tokenId") } });

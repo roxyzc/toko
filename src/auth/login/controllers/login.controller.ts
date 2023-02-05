@@ -37,8 +37,10 @@ const login = async (req: Request, res: Response, next: NextFunction): Promise<a
     if (!valid) return res.status(401).json({ success: false, error: { message: "password invalid" } });
 
     const { accessToken, refreshToken } = await generateToken(
-      findUser.getDataValue("id") as string,
-      String(findUser.getDataValue("role"))
+      findUser.getDataValue("id"),
+      findUser.getDataValue("email"),
+      findUser.getDataValue("nama"),
+      findUser.getDataValue("role") as unknown as string
     );
 
     if (findUser.tokenId === null || findUser.tokenId === undefined) {
