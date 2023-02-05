@@ -47,7 +47,7 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         const valid = yield ((_a = findUser.comparePassword) === null || _a === void 0 ? void 0 : _a.call(findUser, password));
         if (!valid)
             return res.status(401).json({ success: false, error: { message: "password invalid" } });
-        const { accessToken, refreshToken } = yield (0, generateToken_util_1.generateToken)(findUser.getDataValue("id"), String(findUser.getDataValue("role")));
+        const { accessToken, refreshToken } = yield (0, generateToken_util_1.generateToken)(findUser.getDataValue("id"), findUser.getDataValue("email"), findUser.getDataValue("nama"), findUser.getDataValue("role"));
         if (findUser.tokenId === null || findUser.tokenId === undefined) {
             const createToken = yield token_model_1.default.create({ accessToken, refreshToken });
             findUser.setDataValue("tokenId", createToken.getDataValue("tokenId"));

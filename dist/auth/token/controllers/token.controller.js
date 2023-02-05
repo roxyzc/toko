@@ -22,17 +22,17 @@ const refreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         const findToken = yield token_model_1.default.findOne({ where: { accessToken: token } });
         jsonwebtoken_1.default.verify(findToken === null || findToken === void 0 ? void 0 : findToken.getDataValue("refreshToken"), process.env.REFRESHTOKENSECRET, (error, _decoded) => __awaiter(void 0, void 0, void 0, function* () {
             const user = yield user_model_1.default.findOne({
-                attributes: ["id", "role", "tokenId"],
+                attributes: ["id", "email", "nama", "role", "tokenId"],
                 where: { tokenId: findToken === null || findToken === void 0 ? void 0 : findToken.getDataValue("tokenId") },
             });
             if (!user)
                 return res.status(400).json({ success: false, error: { message: "user not found" } });
             if (error) {
-                const { accessToken, refreshToken } = yield (0, generateToken_util_1.generateToken)(user.getDataValue("id"), user.getDataValue("role"));
+                const { accessToken, refreshToken } = yield (0, generateToken_util_1.generateToken)(user.getDataValue("id"), user.getDataValue("email"), user.getDataValue("nama"), user.getDataValue("role"));
                 yield token_model_1.default.update({ accessToken, refreshToken }, { where: { tokenId: user.getDataValue("tokenId") } });
                 return res.status(200).json({ success: true, data: { accessToken } });
             }
-            const { accessToken } = yield (0, generateToken_util_1.generateAccessToken)(user.getDataValue("id"), user.getDataValue("role"));
+            const { accessToken } = yield (0, generateToken_util_1.generateAccessToken)(user.getDataValue("id"), user.getDataValue("email"), user.getDataValue("nama"), user.getDataValue("role"));
             yield token_model_1.default.update({ accessToken }, { where: { tokenId: user.getDataValue("tokenId") } });
             return res.status(200).json({ success: true, data: { accessToken } });
         }));

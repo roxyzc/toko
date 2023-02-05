@@ -18,8 +18,9 @@ const store_model_1 = __importDefault(require("../../../models/store.model"));
 const user_model_1 = __importDefault(require("../../../models/user.model"));
 const sendEmail_util_1 = require("../../../utils/sendEmail.util");
 const add = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+    const { idStore } = req.params;
     const { email } = req.body;
+    const { userId } = req.USER;
     try {
         const user = yield user_model_1.default.findOne({
             where: { email, status: { [sequelize_1.Op.eq]: "active" }, expiredAt: null },
@@ -28,13 +29,18 @@ const add = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         if (!user)
             return res.status(404).json({ success: false, error: { message: "user not found" } });
         const findUser = yield store_model_1.default.findAndCountAll({
-            where: { access: { [sequelize_1.Op.like]: `%${user.getDataValue("id")}%` } },
+            where: { access: { [sequelize_1.Op.and]: { [sequelize_1.Op.like]: `%${user.getDataValue("id")}%` } } },
             attributes: ["idStore", "nameStore"],
         });
         if (findUser.count >= 3)
             return res.status(400).json({ success: false, error: { message: "maximum 3" } });
+        const cekUserOwnerOrEmployee = yield store_model_1.default.findOne({
+            where: { access: { [sequelize_1.Op.and]: { [sequelize_1.Op.like]: `%${userId}%`, [sequelize_1.Op.notLike]: "%employee%" } } },
+        });
+        if (!cekUserOwnerOrEmployee)
+            return res.status(403).json({ success: false, error: { message: "failed" } });
         const store = yield store_model_1.default.findOne({
-            where: { idStore: id },
+            where: { idStore },
             attributes: ["idStore", "nameStore", "access"],
         });
         if (!store)
@@ -46,10 +52,10 @@ const add = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
             }
         });
         access.push(JSON.parse(JSON.stringify({ userId: user.getDataValue("id"), role: "employee", status: "pending" })));
-        const valid = yield (0, sendEmail_util_1.sendEmailForCollaboration)(req, email, user.getDataValue("nama"), store.getDataValue("nameStore"), id);
+        const valid = yield (0, sendEmail_util_1.sendEmailForCollaboration)(req, email, user.getDataValue("nama"), store.getDataValue("nameStore"), idStore);
         if (!valid)
             throw new Error("sendEmail failed");
-        yield store_model_1.default.update({ access: JSON.stringify(access) }, { where: { idStore: id } });
+        yield store_model_1.default.update({ access: JSON.stringify(access) }, { where: { idStore } });
         res.status(200).json({ succes: true, data: { message: "success" } });
     }
     catch (error) {
@@ -60,7 +66,7 @@ const add = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.add = add;
 const accept = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+    const { idStore } = req.params;
     const { userId } = req.USER;
     try {
         const findUser = yield store_model_1.default.findAndCountAll({
@@ -70,7 +76,7 @@ const accept = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         if (findUser.count >= 3)
             return res.status(400).json({ success: false, error: { message: "maximum 3" } });
         const store = yield store_model_1.default.findOne({
-            where: { idStore: id, access: { [sequelize_1.Op.like]: `%${userId}%` } },
+            where: { idStore, access: { [sequelize_1.Op.like]: `%${userId}%` } },
             attributes: ["idStore", "nameStore", "access"],
         });
         if (!store)
@@ -87,7 +93,7 @@ const accept = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             if (x.userId !== userId && (x === null || x === void 0 ? void 0 : x.status) === undefined)
                 data.push({ userId: x.userId, role: x.role });
         });
-        yield store_model_1.default.update({ access: JSON.stringify(data) }, { where: { idStore: id } });
+        yield store_model_1.default.update({ access: JSON.stringify(data) }, { where: { idStore } });
         res.status(200).json({ succes: true, data: { message: "success" } });
     }
     catch (error) {
