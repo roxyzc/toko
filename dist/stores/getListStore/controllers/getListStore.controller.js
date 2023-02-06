@@ -14,18 +14,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const store_model_1 = __importDefault(require("../../../models/store.model"));
 const sequelize_1 = require("sequelize");
+const image_model_1 = __importDefault(require("../../../models/image.model"));
 const getStores = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.USER;
     try {
         const stores = yield store_model_1.default.findAll({
             where: { access: { [sequelize_1.Op.like]: `%${userId}%` } },
             attributes: ["idStore", "nameStore", "access"],
+            include: [{ model: image_model_1.default, as: "image", attributes: ["secure_url"] }],
         });
         let data = [];
         stores.forEach((x, _i) => {
+            var _a;
             const coba = Array.from(JSON.parse(x.access));
             const filter = coba.filter((v, _i) => v.userId === userId);
-            data.push({ idStore: x.getDataValue("idStore"), nameStore: x.getDataValue("nameStore"), role: filter[0].role });
+            data.push({
+                idStore: x.getDataValue("idStore"),
+                nameStore: x.getDataValue("nameStore"),
+                role: filter[0].role,
+                image: (_a = x.image) === null || _a === void 0 ? void 0 : _a.secure_url,
+            });
         });
         if (data.length === 0)
             return res.status(202).json({ success: true, data: { message: "The user doesn't have a store yet" } });

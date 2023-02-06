@@ -120,6 +120,7 @@ export const schema = {
         "string.empty": `{{#label}} cannot be an empty field`,
         "any.required": `{{#label}} is a required field`,
       }),
+      logo: joi.any().required().label("Logo"),
     }),
     addC: joi.object({
       email: joi.string().email().required().label("Email").messages({

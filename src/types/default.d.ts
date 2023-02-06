@@ -35,6 +35,9 @@ declare global {
       SALTHASHIDS: string;
       USER: string;
       PASS: string;
+      CLOUD_NAME: string;
+      CLOUD_API_KEY: string;
+      CLOUD_API_SECRET: string;
     }
   }
   namespace Express {

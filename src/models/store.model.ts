@@ -1,9 +1,11 @@
 import { Model, DataTypes } from "sequelize";
 import db from "../configs/database.config";
+import Image from "./image.model";
 
 export interface IStoreModel {
   idStore?: string;
   nameStore: string;
+  idCloud?: string | null;
   access?: any;
   tax?: Number;
   discount?: Number;
@@ -17,6 +19,7 @@ class Store extends Model<IStoreModel> {
   access?: any;
   createdAt?: Number;
   updatedAt?: Number;
+  image?: any;
 }
 
 Store.init(
@@ -24,6 +27,10 @@ Store.init(
     idStore: {
       type: DataTypes.STRING,
       primaryKey: true,
+      allowNull: false,
+    },
+    idCloud: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     nameStore: {
@@ -71,4 +78,6 @@ Store.init(
 );
 
 Store.removeAttribute("id");
+Image.hasOne(Store, { foreignKey: "idCloud" });
+Store.belongsTo(Image, { as: "image", foreignKey: "idCloud" });
 export default Store;

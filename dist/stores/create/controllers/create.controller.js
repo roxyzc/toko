@@ -14,10 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const store_model_1 = __importDefault(require("../../../models/store.model"));
+const image_model_1 = __importDefault(require("../../../models/image.model"));
 const generateOtp_util_1 = __importDefault(require("../../../utils/generateOtp.util"));
+const cloud_config_1 = __importDefault(require("../../../configs/cloud.config"));
 const hashids_1 = __importDefault(require("hashids"));
 const createStore = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { nameStore } = req.body;
+    const { nameStore, logo } = req.body;
     const { userId } = req.USER;
     const hash = new hashids_1.default(process.env.SALTHASHIDS, 16);
     try {
@@ -46,17 +48,31 @@ const createStore = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
                 id = yield (0, generateOtp_util_1.default)(4);
             }
         }
-        yield store_model_1.default.create({
-            idStore: hash.encode(id),
-            nameStore,
-            access: JSON.stringify([{ userId, role: "owner" }]),
-        });
+        const { secure_url, public_id } = yield cloud_config_1.default.uploader.upload(logo === null || logo === void 0 ? void 0 : logo.path);
+        yield image_model_1.default.create({
+            idCloud: public_id,
+            secure_url: secure_url,
+        })
+            .then((x) => __awaiter(void 0, void 0, void 0, function* () {
+            yield store_model_1.default.create({
+                idStore: hash.encode(id),
+                nameStore,
+                idCloud: x.getDataValue("idCloud"),
+                access: JSON.stringify([{ userId, role: "owner" }]),
+            });
+        }))
+            .catch((error) => __awaiter(void 0, void 0, void 0, function* () {
+            if (error) {
+                yield cloud_config_1.default.uploader.destroy(public_id);
+            }
+        }));
         res.status(200).json({
             success: true,
             data: { message: "create store successfully" },
         });
     }
     catch (error) {
+        console.log(error);
         next(error);
     }
 });

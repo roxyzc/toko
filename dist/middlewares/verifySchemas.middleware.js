@@ -134,6 +134,7 @@ exports.schema = {
                 "string.empty": `{{#label}} cannot be an empty field`,
                 "any.required": `{{#label}} is a required field`,
             }),
+            logo: joi_1.default.any().required().label("Logo"),
         }),
         addC: joi_1.default.object({
             email: joi_1.default.string().email().required().label("Email").messages({
