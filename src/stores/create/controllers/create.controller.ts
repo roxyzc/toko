@@ -52,9 +52,8 @@ const createStore = async (req: Request, res: Response, next: NextFunction): Pro
         });
       })
       .catch(async error => {
-        if (error) {
-          await cloud.uploader.destroy(public_id);
-        }
+        await cloud.uploader.destroy(public_id);
+        throw new Error(error);
       });
 
     res.status(200).json({
