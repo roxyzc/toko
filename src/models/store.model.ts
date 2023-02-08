@@ -5,7 +5,7 @@ import Image from "./image.model";
 export interface IStoreModel {
   idStore?: string;
   nameStore: string;
-  idCloud?: string | null;
+  idImage?: string | null;
   access?: any;
   tax?: Number;
   discount?: Number;
@@ -29,7 +29,7 @@ Store.init(
       primaryKey: true,
       allowNull: false,
     },
-    idCloud: {
+    idImage: {
       type: DataTypes.STRING,
       allowNull: true,
     },
@@ -78,6 +78,6 @@ Store.init(
 );
 
 Store.removeAttribute("id");
-Image.hasOne(Store, { foreignKey: "idCloud" });
-Store.belongsTo(Image, { as: "image", foreignKey: "idCloud" });
+Image.hasOne(Store, { foreignKey: "idImage" });
+Store.belongsTo(Image, { as: "image", foreignKey: "idImage" });
 export default Store;

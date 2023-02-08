@@ -1,7 +1,8 @@
-import { Model, DataTypes } from "sequelize";
+import { Model, DataTypes, UUIDV4 } from "sequelize";
 import db from "@config/database.config";
 
 interface IImageModel {
+  idImage?: string;
   idCloud: string;
   secure_url: string;
 }
@@ -10,9 +11,14 @@ class Image extends Model<IImageModel> {}
 
 Image.init(
   {
-    idCloud: {
+    idImage: {
       type: DataTypes.STRING,
       primaryKey: true,
+      allowNull: false,
+      defaultValue: UUIDV4(),
+    },
+    idCloud: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     secure_url: {

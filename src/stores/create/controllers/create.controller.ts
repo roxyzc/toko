@@ -8,7 +8,7 @@ import cloud from "@config/cloud.config";
 import hashids from "hashids";
 
 const createStore = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-  const { nameStore, logo } = req.body;
+  const { nameStore, image } = req.body;
   const { userId } = req.USER;
   const hash = new hashids(process.env.SALTHASHIDS as string, 16);
   try {
@@ -38,7 +38,7 @@ const createStore = async (req: Request, res: Response, next: NextFunction): Pro
       }
     }
 
-    const { secure_url, public_id } = await cloud.uploader.upload(logo?.path as string);
+    const { secure_url, public_id } = await cloud.uploader.upload(image?.path as string);
     await Image.create({
       idCloud: public_id,
       secure_url: secure_url,
@@ -47,7 +47,7 @@ const createStore = async (req: Request, res: Response, next: NextFunction): Pro
         await Store.create({
           idStore: hash.encode(id),
           nameStore,
-          idCloud: x.getDataValue("idCloud") as string,
+          idImage: x.getDataValue("idImage") as string,
           access: JSON.stringify([{ userId, role: "owner" as unknown as RSTORE }]),
         });
       })

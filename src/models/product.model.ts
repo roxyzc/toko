@@ -1,15 +1,25 @@
 import { Model, DataTypes, UUIDV4 } from "sequelize";
 import db from "../configs/database.config";
-import Store from "./store.model";
+import Image from "./image.model";
 
 export interface IProductModel {
-  idProduct?: String;
+  idProduct?: string;
   idStore: string;
   nameProduct: string;
   price: Number;
+  discount?: Number;
+  stoke: Number;
+  category: string;
+  detail: string;
+  idImage: string;
+  createdAt?: Number;
+  updatedAt?: Number;
 }
 
-class Product extends Model<IProductModel> {}
+class Product extends Model<IProductModel> {
+  createdAt?: Number;
+  updatedAt?: Number;
+}
 
 Product.init(
   {
@@ -31,8 +41,43 @@ Product.init(
       type: DataTypes.BIGINT,
       allowNull: true,
     },
+    discount: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    stoke: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    category: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    detail: {
+      type: DataTypes.STRING(1000),
+      allowNull: false,
+    },
+    idImage: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.BIGINT(),
+      allowNull: true,
+    },
+    updatedAt: {
+      type: DataTypes.BIGINT(),
+      allowNull: true,
+    },
   },
   {
+    hooks: {
+      beforeCreate: async data => {
+        const createdAtAndUpdatedAt = new Date().getTime();
+        data.createdAt = Number(createdAtAndUpdatedAt);
+        data.updatedAt = Number(createdAtAndUpdatedAt);
+      },
+    },
     sequelize: db,
     timestamps: false,
     tableName: "Products",
@@ -41,6 +86,6 @@ Product.init(
 );
 
 Product.removeAttribute("id");
-Store.hasOne(Product, { foreignKey: "idStore" });
-Product.belongsTo(Store, { as: "store", foreignKey: "idStore" });
+Image.hasOne(Product, { foreignKey: "idImage" });
+Product.belongsTo(Image, { as: "image", foreignKey: "idImage" });
 export default Product;
