@@ -1,16 +1,19 @@
 import Image from "@model/image.model";
 import Product from "@model/product.model";
 import { Request, Response, NextFunction } from "express";
+import { Op } from "sequelize";
 
 const getProducts = async (req: Request, res: Response, next: NextFunction) => {
   let limit = Number.isNaN(Number(req.query.limit)) ? 10 : Number(req.query.limit);
   let page = Number.isNaN(Number(req.query.page)) ? 1 : Number(req.query.page);
+  let search = req.query.search === undefined || req.query.search === "" ? "" : req.query.search;
   let start = (page - 1) * limit;
   let end = page * limit;
   try {
     const products = await Product.findAndCountAll({
       where: {
         idStore: req.params.idStore,
+        nameProduct: { [Op.like]: `%${search}%` },
       },
       attributes: [
         "idProduct",
@@ -23,7 +26,7 @@ const getProducts = async (req: Request, res: Response, next: NextFunction) => {
         "createdAt",
         "updatedAt",
       ],
-      order: [["createdAt", "ASC"]],
+      order: [["createdAt", "DESC"]],
       include: [{ model: Image, as: "image", attributes: ["secure_url"] }],
       limit: limit,
       offset: start,
