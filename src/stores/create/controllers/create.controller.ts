@@ -38,14 +38,17 @@ const createStore = async (req: Request, res: Response, next: NextFunction): Pro
       }
     }
 
-    const { secure_url, public_id } = await cloud.uploader.upload(image?.path as string);
+    const idStore = hash.encode(id);
+    const { secure_url, public_id } = await cloud.uploader.upload(image?.path as string, {
+      folder: `project/${idStore}`,
+    });
     await Image.create({
       idCloud: public_id,
       secure_url: secure_url,
     })
       .then(async (x: any) => {
         await Store.create({
-          idStore: hash.encode(id),
+          idStore,
           nameStore,
           idImage: x.getDataValue("idImage") as string,
           access: JSON.stringify([{ userId, role: "owner" as unknown as RSTORE }]),

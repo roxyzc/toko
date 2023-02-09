@@ -4,13 +4,11 @@ import Store from "@model/store.model";
 import Image from "@model/image.model";
 import cloud from "@config/cloud.config";
 import { Op } from "sequelize";
-import hashids from "hashids";
 
 const addProduct = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { nameProduct, price, discount = 0, stoke, category, detail, image } = req.body;
   const { userId } = req.USER;
   const { idStore } = req.params;
-  const hash = new hashids(process.env.SALTHASHIDS as string, 16);
   try {
     const findUserInStores = await Store.findOne({
       where: {
@@ -24,8 +22,9 @@ const addProduct = async (req: Request, res: Response, next: NextFunction): Prom
       attributes: ["idStore"],
     });
     if (!findUserInStores) return res.status(400).json({ success: false, error: { message: "-______-" } });
-    const pid = hash.encodeHex(String(hash.decode(findUserInStores.getDataValue("idStore") as string)));
-    const { secure_url, public_id } = await cloud.uploader.upload(image?.path as string, { folder: pid });
+    const { secure_url, public_id } = await cloud.uploader.upload(image?.path as string, {
+      folder: `project/${findUserInStores.getDataValue("idStore") as string}`,
+    });
     await Image.create({
       idCloud: public_id,
       secure_url: secure_url,
@@ -46,9 +45,18 @@ const addProduct = async (req: Request, res: Response, next: NextFunction): Prom
         await cloud.uploader.destroy(public_id);
         throw new Error(error);
       });
-    // await cloud.api.delete_all_resources({ tag: pid });
+    // await cloud.api
+    //   .delete_resources_by_prefix(`project/${findUserInStores.getDataValue("idStore") as string}`)
+    //   .then(async () => {
+    //     await cloud.api.delete_folder(`project/${findUserInStores.getDataValue("idStore") as string}`);
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //     throw new Error(error);
+    //   });
     res.status(200).json({ success: true, data: { message: "success" } });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
