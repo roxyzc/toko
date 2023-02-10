@@ -14,9 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const product_model_1 = __importDefault(require("../../../models/product.model"));
 const store_model_1 = __importDefault(require("../../../models/store.model"));
+const image_model_1 = __importDefault(require("../../../models/image.model"));
+const cloud_config_1 = __importDefault(require("../../../configs/cloud.config"));
 const sequelize_1 = require("sequelize");
 const addProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { nameProduct, price } = req.body;
+    const { nameProduct, price, discount = 0, stoke, category, detail, image } = req.body;
     const { userId } = req.USER;
     const { idStore } = req.params;
     try {
@@ -33,17 +35,33 @@ const addProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         });
         if (!findUserInStores)
             return res.status(400).json({ success: false, error: { message: "-______-" } });
-        const product = yield product_model_1.default.create({
-            idStore,
-            nameProduct,
-            price,
-        }, { raw: true });
-        yield product.reload({
-            include: [{ model: store_model_1.default, as: "store", attributes: ["nameStore"] }],
+        const { secure_url, public_id } = yield cloud_config_1.default.uploader.upload(image === null || image === void 0 ? void 0 : image.path, {
+            folder: `project/${findUserInStores.getDataValue("idStore")}`,
         });
-        res.status(200).json({ success: true, data: product });
+        yield image_model_1.default.create({
+            idCloud: public_id,
+            secure_url: secure_url,
+        })
+            .then((x) => __awaiter(void 0, void 0, void 0, function* () {
+            yield product_model_1.default.create({
+                idStore,
+                nameProduct,
+                price,
+                discount,
+                stoke,
+                category: String(category).toLowerCase(),
+                detail,
+                idImage: x.getDataValue("idImage"),
+            });
+        }))
+            .catch((error) => __awaiter(void 0, void 0, void 0, function* () {
+            yield cloud_config_1.default.uploader.destroy(public_id);
+            throw new Error(error);
+        }));
+        res.status(200).json({ success: true, data: { message: "success" } });
     }
     catch (error) {
+        console.log(error);
         next(error);
     }
 });

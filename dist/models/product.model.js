@@ -1,11 +1,20 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const database_config_1 = __importDefault(require("../configs/database.config"));
-const store_model_1 = __importDefault(require("./store.model"));
+const image_model_1 = __importDefault(require("./image.model"));
 class Product extends sequelize_1.Model {
 }
 Product.init({
@@ -27,13 +36,48 @@ Product.init({
         type: sequelize_1.DataTypes.BIGINT,
         allowNull: true,
     },
+    discount: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: true,
+    },
+    stoke: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+    },
+    category: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+    },
+    detail: {
+        type: sequelize_1.DataTypes.STRING(1000),
+        allowNull: false,
+    },
+    idImage: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+    },
+    createdAt: {
+        type: sequelize_1.DataTypes.BIGINT(),
+        allowNull: true,
+    },
+    updatedAt: {
+        type: sequelize_1.DataTypes.BIGINT(),
+        allowNull: true,
+    },
 }, {
+    hooks: {
+        beforeCreate: (data) => __awaiter(void 0, void 0, void 0, function* () {
+            const createdAtAndUpdatedAt = new Date().getTime();
+            data.createdAt = Number(createdAtAndUpdatedAt);
+            data.updatedAt = Number(createdAtAndUpdatedAt);
+        }),
+    },
     sequelize: database_config_1.default,
     timestamps: false,
     tableName: "Products",
     freezeTableName: true,
 });
 Product.removeAttribute("id");
-store_model_1.default.hasOne(Product, { foreignKey: "idStore" });
-Product.belongsTo(store_model_1.default, { as: "store", foreignKey: "idStore" });
+image_model_1.default.hasOne(Product, { foreignKey: "idImage" });
+Product.belongsTo(image_model_1.default, { as: "image", foreignKey: "idImage" });
 exports.default = Product;

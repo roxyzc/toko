@@ -98,6 +98,17 @@ exports.schema = {
             price: joi_1.default.number().integer().label("Price").required().min(1).messages({
                 "any.required": `{{#label}} is a required field`,
             }),
+            discount: joi_1.default.number().integer().min(0).max(100).optional().label("Discount"),
+            stoke: joi_1.default.number().integer().min(1).required().label("Stoke").messages({
+                "any.required": `{{#label}} is a required field`,
+            }),
+            category: joi_1.default.string().trim().required().label("Category").messages({
+                "any.required": `{{#label}} is a required field`,
+            }),
+            detail: joi_1.default.string().required().label("Detail").messages({
+                "any.required": `{{#label}} is a required field`,
+            }),
+            image: joi_1.default.any().required().label("Image"),
         }),
     },
     Other: {
@@ -134,7 +145,9 @@ exports.schema = {
                 "string.empty": `{{#label}} cannot be an empty field`,
                 "any.required": `{{#label}} is a required field`,
             }),
-            logo: joi_1.default.any().required().label("Logo"),
+            image: joi_1.default.any().required().label("Image").messages({
+                "any.required": `{{#label}} is a required field`,
+            }),
         }),
         addC: joi_1.default.object({
             email: joi_1.default.string().email().required().label("Email").messages({

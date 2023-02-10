@@ -14,7 +14,7 @@ Store.init({
         primaryKey: true,
         allowNull: false,
     },
-    idCloud: {
+    idImage: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
@@ -60,6 +60,6 @@ Store.init({
     freezeTableName: true,
 });
 Store.removeAttribute("id");
-image_model_1.default.hasOne(Store, { foreignKey: "idCloud" });
-Store.belongsTo(image_model_1.default, { as: "image", foreignKey: "idCloud" });
+image_model_1.default.hasOne(Store, { foreignKey: "idImage" });
+Store.belongsTo(image_model_1.default, { as: "image", foreignKey: "idImage" });
 exports.default = Store;

@@ -8,9 +8,14 @@ const database_config_1 = __importDefault(require("../configs/database.config"))
 class Image extends sequelize_1.Model {
 }
 Image.init({
-    idCloud: {
+    idImage: {
         type: sequelize_1.DataTypes.STRING,
         primaryKey: true,
+        allowNull: false,
+        defaultValue: (0, sequelize_1.UUIDV4)(),
+    },
+    idCloud: {
+        type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
     secure_url: {

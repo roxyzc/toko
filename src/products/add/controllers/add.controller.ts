@@ -36,7 +36,7 @@ const addProduct = async (req: Request, res: Response, next: NextFunction): Prom
           price,
           discount,
           stoke,
-          category,
+          category: String(category).toLowerCase(),
           detail,
           idImage: x.getDataValue("idImage") as string,
         });

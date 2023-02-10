@@ -88,7 +88,7 @@ export const schema = {
       stoke: joi.number().integer().min(1).required().label("Stoke").messages({
         "any.required": `{{#label}} is a required field`,
       }),
-      category: joi.string().required().label("Category").messages({
+      category: joi.string().trim().required().label("Category").messages({
         "any.required": `{{#label}} is a required field`,
       }),
       detail: joi.string().required().label("Detail").messages({

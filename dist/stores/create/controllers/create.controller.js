@@ -19,7 +19,7 @@ const generateOtp_util_1 = __importDefault(require("../../../utils/generateOtp.u
 const cloud_config_1 = __importDefault(require("../../../configs/cloud.config"));
 const hashids_1 = __importDefault(require("hashids"));
 const createStore = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { nameStore, logo } = req.body;
+    const { nameStore, image } = req.body;
     const { userId } = req.USER;
     const hash = new hashids_1.default(process.env.SALTHASHIDS, 16);
     try {
@@ -48,23 +48,25 @@ const createStore = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
                 id = yield (0, generateOtp_util_1.default)(4);
             }
         }
-        const { secure_url, public_id } = yield cloud_config_1.default.uploader.upload(logo === null || logo === void 0 ? void 0 : logo.path);
+        const idStore = hash.encode(id);
+        const { secure_url, public_id } = yield cloud_config_1.default.uploader.upload(image === null || image === void 0 ? void 0 : image.path, {
+            folder: `project/${idStore}`,
+        });
         yield image_model_1.default.create({
             idCloud: public_id,
             secure_url: secure_url,
         })
             .then((x) => __awaiter(void 0, void 0, void 0, function* () {
             yield store_model_1.default.create({
-                idStore: hash.encode(id),
+                idStore,
                 nameStore,
-                idCloud: x.getDataValue("idCloud"),
+                idImage: x.getDataValue("idImage"),
                 access: JSON.stringify([{ userId, role: "owner" }]),
             });
         }))
             .catch((error) => __awaiter(void 0, void 0, void 0, function* () {
-            if (error) {
-                yield cloud_config_1.default.uploader.destroy(public_id);
-            }
+            yield cloud_config_1.default.uploader.destroy(public_id);
+            throw new Error(error);
         }));
         res.status(200).json({
             success: true,
