@@ -13,8 +13,8 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction): Pro
     const token = authHeader.split(" ")[1];
     const findToken = await findTokenInDatabase(token);
     if (!findToken) return res.status(400).json({ success: false, error: { message: "token invalid" } });
-    jwt.verify(token, process.env.ACCESSTOKENSECRET as string, async (error, decoded): Promise<any> => {
-      if (error) return res.status(401).json({ status: false, error: { message: "token expired" } });
+    jwt.verify(token, process.env.ACCESSTOKENSECRET as string, async (error: any, decoded): Promise<any> => {
+      if (error) return res.status(401).json({ status: false, error: { message: error.message } });
       req.USER = decoded;
       next();
     });

@@ -18,11 +18,11 @@ Token.init(
       allowNull: false,
     },
     accessToken: {
-      type: DataTypes.STRING(),
+      type: DataTypes.STRING(1000),
       allowNull: true,
     },
     refreshToken: {
-      type: DataTypes.STRING(),
+      type: DataTypes.STRING(1000),
       allowNull: true,
     },
   },
