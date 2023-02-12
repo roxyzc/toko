@@ -4,6 +4,7 @@ import Store from "@model/store.model";
 import { RSTORE, STATUS } from "@tp/default";
 import User from "@model/user.model";
 import { sendEmailForCollaboration } from "@util/sendEmail.util";
+import { checkUserInStore, checkUserInStoreAsOwner } from "@util/checkUserInStore.util";
 
 const add = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { idStore } = req.params;
@@ -15,23 +16,17 @@ const add = async (req: Request, res: Response, next: NextFunction): Promise<any
       attributes: ["id", "nama"],
     });
     if (!user) return res.status(404).json({ success: false, error: { message: "user not found" } });
-    const findUser = await Store.findAndCountAll({
+    const findUser = await Store.count({
       where: { access: { [Op.and]: { [Op.like]: `%${user.getDataValue("id")}%` } } },
-      attributes: ["idStore", "nameStore"],
     });
-    if (findUser.count >= 3) return res.status(400).json({ success: false, error: { message: "maximum 3" } });
-    const cekUserOwnerOrEmployee = await Store.findOne({
-      where: { access: { [Op.and]: { [Op.like]: `%${userId}%`, [Op.notLike]: "%employee%" } } },
-    });
-    if (!cekUserOwnerOrEmployee) return res.status(403).json({ success: false, error: { message: "failed" } });
+    if (findUser >= 3) return res.status(400).json({ success: false, error: { message: "maximum 3" } });
     const store = await Store.findOne({
-      where: { idStore },
-      attributes: ["idStore", "nameStore", "access"],
+      where: { idStore: idStore, access: { [Op.like]: `%${userId}%` } },
     });
-
     if (!store) return res.status(404).json({ success: false, error: { message: "store not found" } });
     const access: any[] = Array.from(JSON.parse(store.access));
-
+    if ((await checkUserInStore(userId, access)) && (await checkUserInStoreAsOwner(userId, access)) === false)
+      return res.status(400).json({ success: false, error: { message: "bad request" } });
     access.forEach((value: any) => {
       if (value.userId == user.getDataValue("id")) {
         throw new Error("user already exists");
@@ -63,11 +58,11 @@ const accept = async (req: Request, res: Response, next: NextFunction): Promise<
   const { idStore } = req.params;
   const { userId } = req.USER;
   try {
-    const findUser = await Store.findAndCountAll({
+    const findUser = await Store.count({
       where: { access: { [Op.and]: { [Op.like]: `%${userId}%`, [Op.notLike]: `%pending%` } } },
       attributes: ["idStore", "nameStore"],
     });
-    if (findUser.count >= 3) return res.status(400).json({ success: false, error: { message: "maximum 3" } });
+    if (findUser >= 3) return res.status(400).json({ success: false, error: { message: "maximum 3" } });
 
     const store = await Store.findOne({
       where: { idStore, access: { [Op.like]: `%${userId}%` } },
@@ -76,6 +71,8 @@ const accept = async (req: Request, res: Response, next: NextFunction): Promise<
 
     if (!store) return res.status(404).json({ success: false, error: { message: "user not found" } });
     const access: any[] = Array.from(JSON.parse(store.access));
+    if ((await checkUserInStore(userId, access)) === false)
+      return res.status(400).json({ success: false, error: { message: "error" } });
 
     let data: any[] = [];
     access.forEach((x, _i) => {

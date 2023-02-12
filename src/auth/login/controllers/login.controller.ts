@@ -42,7 +42,6 @@ const login = async (req: Request, res: Response, next: NextFunction): Promise<a
       findUser.getDataValue("nama"),
       findUser.getDataValue("role") as unknown as string
     );
-    console.log(accessToken.length);
 
     if (findUser.tokenId === null || findUser.tokenId === undefined) {
       const createToken = await Token.create({ accessToken, refreshToken });

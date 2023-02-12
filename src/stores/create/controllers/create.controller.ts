@@ -12,16 +12,15 @@ const createStore = async (req: Request, res: Response, next: NextFunction): Pro
   const { userId } = req.USER;
   const hash = new hashids(process.env.SALTHASHIDS as string, 16);
   try {
-    const store = await Store.findAndCountAll({
+    const store = await Store.count({
       where: {
         access: {
           [Op.like]: `%${userId}%`,
         },
       },
-      attributes: ["idStore", "nameStore"],
     });
 
-    if (store.count === 3) return res.status(400).json({ success: false, error: { message: "maximum 3" } });
+    if (store === 3) return res.status(400).json({ success: false, error: { message: "maximum 3" } });
 
     let id: string = await generateId(4);
     let valid = true;

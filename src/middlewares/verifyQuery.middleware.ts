@@ -1,8 +1,8 @@
 import joi, { ObjectSchema } from "joi";
 import { Request, Response, NextFunction } from "express";
-import { logger } from "../logs/logger.log";
+import logger from "../logs/logger.log";
 
-export const validateQuery = (schema: ObjectSchema) => {
+const validateQuery = (schema: ObjectSchema) => {
   return async (req: Request, _res: Response, next: NextFunction) => {
     try {
       await schema.validateAsync(req.query);
@@ -14,7 +14,7 @@ export const validateQuery = (schema: ObjectSchema) => {
   };
 };
 
-export const query = {
+const query = {
   product: {
     get: joi.object({
       limit: joi.string().optional().label("Label"),
@@ -23,3 +23,5 @@ export const query = {
     }),
   },
 };
+
+export { validateQuery, query };

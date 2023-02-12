@@ -1,8 +1,8 @@
 import joi, { ObjectSchema } from "joi";
 import { Request, Response, NextFunction } from "express";
-import { logger } from "../logs/logger.log";
+import logger from "../logs/logger.log";
 
-export const validateSchema = (schema: ObjectSchema) => {
+const validateSchema = (schema: ObjectSchema) => {
   return async (req: Request, _res: Response, next: NextFunction) => {
     try {
       await schema.validateAsync(req.body);
@@ -14,7 +14,7 @@ export const validateSchema = (schema: ObjectSchema) => {
   };
 };
 
-export const schema = {
+const schema = {
   Auth: {
     register: joi.object({
       nama: joi
@@ -144,3 +144,5 @@ export const schema = {
     }),
   },
 };
+
+export { validateSchema, schema };

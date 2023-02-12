@@ -1,7 +1,5 @@
 import nodemailer from "nodemailer";
 import { Request } from "express";
-// import User from "@model/user.model";
-// import Store from "@model/store.model";
 
 const transporter = () => {
   return nodemailer.createTransport({

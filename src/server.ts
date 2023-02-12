@@ -1,7 +1,7 @@
 import express, { Application } from "express";
 import morgan from "morgan";
 import cors from "cors";
-import { logger } from "./logs/logger.log";
+import logger from "./logs/logger.log";
 import { errorHandler, notFound } from "./middlewares/errorHandlers.middleware";
 import "dotenv/config";
 import db from "./configs/database.config";
