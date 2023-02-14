@@ -75,12 +75,19 @@ const schema = {
   },
   Product: {
     add: joi.object({
-      nameProduct: joi.string().label("Name Product").trim().min(2).required().messages({
-        "string.base": `{{#label}} should be a type of 'text'`,
-        "string.empty": `{{#label}} cannot be an empty field`,
-        "string.min": `{{#label}} should have a minimum length of {#limit}`,
-        "any.required": `{{#label}} is a required field`,
-      }),
+      nameProduct: joi
+        .string()
+        .label("Name Product")
+        .trim()
+        .regex(/^[\w\s]+$/)
+        .min(2)
+        .required()
+        .messages({
+          "string.base": `{{#label}} should be a type of 'text'`,
+          "string.empty": `{{#label}} cannot be an empty field`,
+          "string.min": `{{#label}} should have a minimum length of {#limit}`,
+          "any.required": `{{#label}} is a required field`,
+        }),
       price: joi.number().integer().label("Price").required().min(1).messages({
         "any.required": `{{#label}} is a required field`,
       }),
@@ -95,6 +102,26 @@ const schema = {
         "any.required": `{{#label}} is a required field`,
       }),
       image: joi.any().required().label("Image"),
+    }),
+    update: joi.object({
+      nameProduct: joi
+        .string()
+        .label("Name Product")
+        .trim()
+        .regex(/^[\w\s]+$/)
+        .min(2)
+        .optional()
+        .messages({
+          "string.base": `{{#label}} should be a type of 'text'`,
+          "string.empty": `{{#label}} cannot be an empty field`,
+          "string.min": `{{#label}} should have a minimum length of {#limit}`,
+        }),
+      price: joi.number().integer().label("Price").optional().min(0),
+      discount: joi.number().integer().min(0).max(100).optional().label("Discount"),
+      stoke: joi.number().integer().min(1).optional().label("Stoke"),
+      category: joi.string().trim().optional().label("Category"),
+      detail: joi.string().optional().label("Detail"),
+      image: joi.any().optional().label("Image"),
     }),
   },
   Other: {
@@ -126,11 +153,17 @@ const schema = {
   },
   store: {
     create: joi.object({
-      nameStore: joi.string().required().label("Name store").messages({
-        "string.base": `{{#label}} should be a type of 'String'`,
-        "string.empty": `{{#label}} cannot be an empty field`,
-        "any.required": `{{#label}} is a required field`,
-      }),
+      nameStore: joi
+        .string()
+        .trim()
+        .regex(/^[\w\s]+$/)
+        .required()
+        .label("Name store")
+        .messages({
+          "string.base": `{{#label}} should be a type of 'String'`,
+          "string.empty": `{{#label}} cannot be an empty field`,
+          "any.required": `{{#label}} is a required field`,
+        }),
       image: joi.any().required().label("Image").messages({
         "any.required": `{{#label}} is a required field`,
       }),

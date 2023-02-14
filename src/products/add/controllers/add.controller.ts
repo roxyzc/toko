@@ -1,29 +1,18 @@
 import { Request, Response, NextFunction } from "express";
 import Product from "@model/product.model";
-import Store from "@model/store.model";
 import Image from "@model/image.model";
 import cloud from "@config/cloud.config";
-import { Op } from "sequelize";
+import { checkAccessUserInStore } from "@service/store.service";
 
 const addProduct = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { nameProduct, price, discount = 0, stoke, category, detail, image } = req.body;
   const { userId } = req.USER;
   const { idStore } = req.params;
   try {
-    const findUserInStores = await Store.findOne({
-      where: {
-        [Op.and]: {
-          idStore,
-          access: {
-            [Op.like]: `%${userId}%`,
-          },
-        },
-      },
-      attributes: ["idStore"],
-    });
-    if (!findUserInStores) return res.status(400).json({ success: false, error: { message: "-______-" } });
+    if (!(await checkAccessUserInStore(userId, idStore)))
+      return res.status(400).json({ success: false, error: { message: "error" } });
     const { secure_url, public_id } = await cloud.uploader.upload(image?.path as string, {
-      folder: `project/${findUserInStores.getDataValue("idStore") as string}`,
+      folder: `project/${idStore}`,
     });
     await Image.create({
       idCloud: public_id,

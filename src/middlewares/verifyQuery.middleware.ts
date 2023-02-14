@@ -21,6 +21,10 @@ const query = {
       page: joi.string().optional().label("Page"),
       search: joi.string().optional().label("Search"),
     }),
+    deleteAndUpdate: joi.object({
+      is: joi.string().required().label("is"),
+      ip: joi.string().required().label("ip"),
+    }),
   },
 };
 

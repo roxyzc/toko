@@ -34,7 +34,8 @@
       "@model/*": ["models/*"],
       "@tp/*": ["types/*"],
       "@util/*": ["utils/*"],
-      "@config/*": ["configs/*"]
+      "@config/*": ["configs/*"],
+      "@service/*": ["services/*"]
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     "typeRoots": [

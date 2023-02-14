@@ -19,6 +19,7 @@ export interface IProductModel {
 class Product extends Model<IProductModel> {
   createdAt?: Number;
   updatedAt?: Number;
+  image?: any;
 }
 
 Product.init(
