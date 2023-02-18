@@ -31,12 +31,10 @@ const getStores = async (req: Request, res: Response, next: NextFunction): Promi
     const encrypt = CryptoJS.AES.encrypt(JSON.stringify(data), process.env.SALTHASHIDS as string).toString();
     res.status(200).json({
       success: true,
-      data: {
-        encrypt,
-        decrypt: JSON.parse(
-          CryptoJS.AES.decrypt(encrypt, process.env.SALTHASHIDS as string).toString(CryptoJS.enc.Utf8)
-        ),
-      },
+      data: encrypt,
+      // decrypt: JSON.parse(
+      //   CryptoJS.AES.decrypt(encrypt, process.env.SALTHASHIDS as string).toString(CryptoJS.enc.Utf8)
+      // ),
     });
   } catch (error) {
     next(error);

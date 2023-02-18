@@ -41,10 +41,7 @@ const getStores = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         const encrypt = crypto_js_1.default.AES.encrypt(JSON.stringify(data), process.env.SALTHASHIDS).toString();
         res.status(200).json({
             success: true,
-            data: {
-                encrypt,
-                decrypt: JSON.parse(crypto_js_1.default.AES.decrypt(encrypt, process.env.SALTHASHIDS).toString(crypto_js_1.default.enc.Utf8)),
-            },
+            data: encrypt,
         });
     }
     catch (error) {
