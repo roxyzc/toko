@@ -38,7 +38,7 @@ const getProducts = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
                 "createdAt",
                 "updatedAt",
             ],
-            order: [["createdAt", "DESC"]],
+            order: [["updatedAt", "DESC"]],
             include: [{ model: image_model_1.default, as: "image", attributes: ["secure_url"] }],
             limit: limit,
             offset: start,

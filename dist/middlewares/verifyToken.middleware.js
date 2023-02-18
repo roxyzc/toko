@@ -29,7 +29,7 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
             return res.status(400).json({ success: false, error: { message: "token invalid" } });
         jsonwebtoken_1.default.verify(token, process.env.ACCESSTOKENSECRET, (error, decoded) => __awaiter(void 0, void 0, void 0, function* () {
             if (error)
-                return res.status(401).json({ status: false, error: { message: "token expired" } });
+                return res.status(401).json({ status: false, error: { message: error.message } });
             req.USER = decoded;
             next();
         }));

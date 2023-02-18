@@ -26,7 +26,7 @@ const getProducts = async (req: Request, res: Response, next: NextFunction) => {
         "createdAt",
         "updatedAt",
       ],
-      order: [["createdAt", "DESC"]],
+      order: [["updatedAt", "DESC"]],
       include: [{ model: Image, as: "image", attributes: ["secure_url"] }],
       limit: limit,
       offset: start,

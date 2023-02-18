@@ -73,6 +73,41 @@ const schema = {
       }),
     }),
   },
+  Store: {
+    create: joi.object({
+      nameStore: joi
+        .string()
+        .trim()
+        .regex(/^[\w\s]+$/)
+        .required()
+        .label("Name store")
+        .messages({
+          "string.base": `{{#label}} should be a type of 'String'`,
+          "string.empty": `{{#label}} cannot be an empty field`,
+          "any.required": `{{#label}} is a required field`,
+        }),
+      image: joi.any().required().label("Image").messages({
+        "any.required": `{{#label}} is a required field`,
+      }),
+    }),
+    update: joi.object({
+      nameStore: joi
+        .string()
+        .trim()
+        .regex(/^[\w\s]+$/)
+        .label("Name store"),
+      tax: joi.number().integer().min(0).label("Tax"),
+      income: joi.number().integer().min(0).label("Income"),
+      image: joi.any().label("Image"),
+    }),
+    addC: joi.object({
+      email: joi.string().email().required().label("Email").messages({
+        "string.email": `'{{#label}}' in Email must be a valid {{#label}}`,
+        "string.empty": `{{#label}} cannot be an empty field`,
+        "any.required": `{{#label}} is a required field`,
+      }),
+    }),
+  },
   Product: {
     add: joi.object({
       nameProduct: joi
@@ -88,11 +123,11 @@ const schema = {
           "string.min": `{{#label}} should have a minimum length of {#limit}`,
           "any.required": `{{#label}} is a required field`,
         }),
-      price: joi.number().integer().label("Price").required().min(1).messages({
+      price: joi.number().integer().label("Price").required().min(0).messages({
         "any.required": `{{#label}} is a required field`,
       }),
       discount: joi.number().integer().min(0).max(100).optional().label("Discount"),
-      stoke: joi.number().integer().min(1).required().label("Stoke").messages({
+      stoke: joi.number().integer().min(0).required().label("Stoke").messages({
         "any.required": `{{#label}} is a required field`,
       }),
       category: joi.string().trim().required().label("Category").messages({
@@ -110,18 +145,17 @@ const schema = {
         .trim()
         .regex(/^[\w\s]+$/)
         .min(2)
-        .optional()
         .messages({
           "string.base": `{{#label}} should be a type of 'text'`,
           "string.empty": `{{#label}} cannot be an empty field`,
           "string.min": `{{#label}} should have a minimum length of {#limit}`,
         }),
-      price: joi.number().integer().label("Price").optional().min(0),
-      discount: joi.number().integer().min(0).max(100).optional().label("Discount"),
-      stoke: joi.number().integer().min(1).optional().label("Stoke"),
-      category: joi.string().trim().optional().label("Category"),
-      detail: joi.string().optional().label("Detail"),
-      image: joi.any().optional().label("Image"),
+      price: joi.number().integer().label("Price").min(0),
+      discount: joi.number().integer().min(0).max(100).label("Discount"),
+      stoke: joi.number().integer().min(0).label("Stoke"),
+      category: joi.string().trim().label("Category"),
+      detail: joi.string().label("Detail"),
+      image: joi.any().label("Image"),
     }),
   },
   Other: {
@@ -146,31 +180,6 @@ const schema = {
       type: joi.string().valid("register", "forgotPassword").required().label("Type").messages({
         "any.only": `{{#label}} {#value} is missing`,
         "string.base": `{{#label}} should be a type of 'String'`,
-        "string.empty": `{{#label}} cannot be an empty field`,
-        "any.required": `{{#label}} is a required field`,
-      }),
-    }),
-  },
-  store: {
-    create: joi.object({
-      nameStore: joi
-        .string()
-        .trim()
-        .regex(/^[\w\s]+$/)
-        .required()
-        .label("Name store")
-        .messages({
-          "string.base": `{{#label}} should be a type of 'String'`,
-          "string.empty": `{{#label}} cannot be an empty field`,
-          "any.required": `{{#label}} is a required field`,
-        }),
-      image: joi.any().required().label("Image").messages({
-        "any.required": `{{#label}} is a required field`,
-      }),
-    }),
-    addC: joi.object({
-      email: joi.string().email().required().label("Email").messages({
-        "string.email": `'{{#label}}' in Email must be a valid {{#label}}`,
         "string.empty": `{{#label}} cannot be an empty field`,
         "any.required": `{{#label}} is a required field`,
       }),

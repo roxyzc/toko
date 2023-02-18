@@ -23,15 +23,14 @@ const createStore = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     const { userId } = req.USER;
     const hash = new hashids_1.default(process.env.SALTHASHIDS, 16);
     try {
-        const store = yield store_model_1.default.findAndCountAll({
+        const store = yield store_model_1.default.count({
             where: {
                 access: {
                     [sequelize_1.Op.like]: `%${userId}%`,
                 },
             },
-            attributes: ["idStore", "nameStore"],
         });
-        if (store.count === 3)
+        if (store === 3)
             return res.status(400).json({ success: false, error: { message: "maximum 3" } });
         let id = yield (0, generateOtp_util_1.default)(4);
         let valid = true;

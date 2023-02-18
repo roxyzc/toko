@@ -15,11 +15,11 @@ Token.init({
         allowNull: false,
     },
     accessToken: {
-        type: sequelize_1.DataTypes.STRING(),
+        type: sequelize_1.DataTypes.STRING(1000),
         allowNull: true,
     },
     refreshToken: {
-        type: sequelize_1.DataTypes.STRING(),
+        type: sequelize_1.DataTypes.STRING(1000),
         allowNull: true,
     },
 }, {

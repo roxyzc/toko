@@ -64,10 +64,10 @@ Store.init(
   },
   {
     hooks: {
-      beforeCreate: store => {
+      beforeCreate: data => {
         const createdAtAndUpdatedAt = new Date().getTime();
-        store.createdAt = Number(createdAtAndUpdatedAt);
-        store.updatedAt = Number(createdAtAndUpdatedAt);
+        data.createdAt = Number(createdAtAndUpdatedAt);
+        data.updatedAt = Number(createdAtAndUpdatedAt);
       },
     },
     sequelize: db,

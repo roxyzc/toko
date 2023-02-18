@@ -21,8 +21,7 @@ const updateProduct = async (req: Request, res: Response, next: NextFunction): P
         include: [{ model: Image, as: "image", attributes: ["idCloud"] }],
       }).then(async value => {
         const { secure_url, public_id } = await cloud.uploader.upload(image?.path as string, {
-          folder: `project/${is as string}`,
-          public_id: value?.getDataValue("idImage"),
+          public_id: value?.image.idCloud as string,
         });
         await Image.update({ secure_url, idCloud: public_id }, { where: { idImage: value?.getDataValue("idImage") } });
       });
@@ -35,6 +34,7 @@ const updateProduct = async (req: Request, res: Response, next: NextFunction): P
         discount,
         category,
         detail,
+        updatedAt: Number(new Date().getTime()),
       },
       {
         where: {

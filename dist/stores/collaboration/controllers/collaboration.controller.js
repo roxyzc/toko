@@ -17,6 +17,7 @@ const sequelize_1 = require("sequelize");
 const store_model_1 = __importDefault(require("../../../models/store.model"));
 const user_model_1 = __importDefault(require("../../../models/user.model"));
 const sendEmail_util_1 = require("../../../utils/sendEmail.util");
+const checkUserInStore_util_1 = require("../../../utils/checkUserInStore.util");
 const add = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { idStore } = req.params;
     const { email } = req.body;
@@ -28,24 +29,19 @@ const add = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         });
         if (!user)
             return res.status(404).json({ success: false, error: { message: "user not found" } });
-        const findUser = yield store_model_1.default.findAndCountAll({
+        const findUser = yield store_model_1.default.count({
             where: { access: { [sequelize_1.Op.and]: { [sequelize_1.Op.like]: `%${user.getDataValue("id")}%` } } },
-            attributes: ["idStore", "nameStore"],
         });
-        if (findUser.count >= 3)
+        if (findUser >= 3)
             return res.status(400).json({ success: false, error: { message: "maximum 3" } });
-        const cekUserOwnerOrEmployee = yield store_model_1.default.findOne({
-            where: { access: { [sequelize_1.Op.and]: { [sequelize_1.Op.like]: `%${userId}%`, [sequelize_1.Op.notLike]: "%employee%" } } },
-        });
-        if (!cekUserOwnerOrEmployee)
-            return res.status(403).json({ success: false, error: { message: "failed" } });
         const store = yield store_model_1.default.findOne({
-            where: { idStore },
-            attributes: ["idStore", "nameStore", "access"],
+            where: { idStore: idStore, access: { [sequelize_1.Op.like]: `%${userId}%` } },
         });
         if (!store)
             return res.status(404).json({ success: false, error: { message: "store not found" } });
         const access = Array.from(JSON.parse(store.access));
+        if ((yield (0, checkUserInStore_util_1.checkUserInStore)(userId, access)) && (yield (0, checkUserInStore_util_1.checkUserInStoreAsOwner)(userId, access)) === false)
+            return res.status(400).json({ success: false, error: { message: "bad request" } });
         access.forEach((value) => {
             if (value.userId == user.getDataValue("id")) {
                 throw new Error("user already exists");
@@ -69,11 +65,11 @@ const accept = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     const { idStore } = req.params;
     const { userId } = req.USER;
     try {
-        const findUser = yield store_model_1.default.findAndCountAll({
+        const findUser = yield store_model_1.default.count({
             where: { access: { [sequelize_1.Op.and]: { [sequelize_1.Op.like]: `%${userId}%`, [sequelize_1.Op.notLike]: `%pending%` } } },
             attributes: ["idStore", "nameStore"],
         });
-        if (findUser.count >= 3)
+        if (findUser >= 3)
             return res.status(400).json({ success: false, error: { message: "maximum 3" } });
         const store = yield store_model_1.default.findOne({
             where: { idStore, access: { [sequelize_1.Op.like]: `%${userId}%` } },
@@ -82,6 +78,8 @@ const accept = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         if (!store)
             return res.status(404).json({ success: false, error: { message: "user not found" } });
         const access = Array.from(JSON.parse(store.access));
+        if ((yield (0, checkUserInStore_util_1.checkUserInStore)(userId, access)) === false)
+            return res.status(400).json({ success: false, error: { message: "error" } });
         let data = [];
         access.forEach((x, _i) => {
             if (x.userId === userId && (x === null || x === void 0 ? void 0 : x.status) === undefined)

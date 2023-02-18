@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.schema = exports.validateSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
-const logger_log_1 = require("../logs/logger.log");
+const logger_log_1 = __importDefault(require("../logs/logger.log"));
 const validateSchema = (schema) => {
     return (req, _res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
@@ -22,13 +22,13 @@ const validateSchema = (schema) => {
             next();
         }
         catch (error) {
-            logger_log_1.logger.error(error.message);
+            logger_log_1.default.error(error.message);
             next(error);
         }
     });
 };
 exports.validateSchema = validateSchema;
-exports.schema = {
+const schema = {
     Auth: {
         register: joi_1.default.object({
             nama: joi_1.default
@@ -87,9 +87,51 @@ exports.schema = {
             }),
         }),
     },
+    Store: {
+        create: joi_1.default.object({
+            nameStore: joi_1.default
+                .string()
+                .trim()
+                .regex(/^[\w\s]+$/)
+                .required()
+                .label("Name store")
+                .messages({
+                "string.base": `{{#label}} should be a type of 'String'`,
+                "string.empty": `{{#label}} cannot be an empty field`,
+                "any.required": `{{#label}} is a required field`,
+            }),
+            image: joi_1.default.any().required().label("Image").messages({
+                "any.required": `{{#label}} is a required field`,
+            }),
+        }),
+        update: joi_1.default.object({
+            nameStore: joi_1.default
+                .string()
+                .trim()
+                .regex(/^[\w\s]+$/)
+                .label("Name store"),
+            tax: joi_1.default.number().integer().min(0).label("Tax"),
+            income: joi_1.default.number().integer().min(0).label("Income"),
+            image: joi_1.default.any().label("Image"),
+        }),
+        addC: joi_1.default.object({
+            email: joi_1.default.string().email().required().label("Email").messages({
+                "string.email": `'{{#label}}' in Email must be a valid {{#label}}`,
+                "string.empty": `{{#label}} cannot be an empty field`,
+                "any.required": `{{#label}} is a required field`,
+            }),
+        }),
+    },
     Product: {
         add: joi_1.default.object({
-            nameProduct: joi_1.default.string().label("Name Product").trim().min(2).required().messages({
+            nameProduct: joi_1.default
+                .string()
+                .label("Name Product")
+                .trim()
+                .regex(/^[\w\s]+$/)
+                .min(2)
+                .required()
+                .messages({
                 "string.base": `{{#label}} should be a type of 'text'`,
                 "string.empty": `{{#label}} cannot be an empty field`,
                 "string.min": `{{#label}} should have a minimum length of {#limit}`,
@@ -109,6 +151,25 @@ exports.schema = {
                 "any.required": `{{#label}} is a required field`,
             }),
             image: joi_1.default.any().required().label("Image"),
+        }),
+        update: joi_1.default.object({
+            nameProduct: joi_1.default
+                .string()
+                .label("Name Product")
+                .trim()
+                .regex(/^[\w\s]+$/)
+                .min(2)
+                .messages({
+                "string.base": `{{#label}} should be a type of 'text'`,
+                "string.empty": `{{#label}} cannot be an empty field`,
+                "string.min": `{{#label}} should have a minimum length of {#limit}`,
+            }),
+            price: joi_1.default.number().integer().label("Price").min(0),
+            discount: joi_1.default.number().integer().min(0).max(100).label("Discount"),
+            stoke: joi_1.default.number().integer().min(1).label("Stoke"),
+            category: joi_1.default.string().trim().label("Category"),
+            detail: joi_1.default.string().label("Detail"),
+            image: joi_1.default.any().label("Image"),
         }),
     },
     Other: {
@@ -138,23 +199,5 @@ exports.schema = {
             }),
         }),
     },
-    store: {
-        create: joi_1.default.object({
-            nameStore: joi_1.default.string().required().label("Name store").messages({
-                "string.base": `{{#label}} should be a type of 'String'`,
-                "string.empty": `{{#label}} cannot be an empty field`,
-                "any.required": `{{#label}} is a required field`,
-            }),
-            image: joi_1.default.any().required().label("Image").messages({
-                "any.required": `{{#label}} is a required field`,
-            }),
-        }),
-        addC: joi_1.default.object({
-            email: joi_1.default.string().email().required().label("Email").messages({
-                "string.email": `'{{#label}}' in Email must be a valid {{#label}}`,
-                "string.empty": `{{#label}} cannot be an empty field`,
-                "any.required": `{{#label}} is a required field`,
-            }),
-        }),
-    },
 };
+exports.schema = schema;

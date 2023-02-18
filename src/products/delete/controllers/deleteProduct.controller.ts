@@ -34,7 +34,6 @@ const deleteProduct = async (req: Request, res: Response, next: NextFunction): P
           },
           transaction: t,
         });
-        t.commit();
       })
       .catch(error => {
         t.rollback();
@@ -45,6 +44,7 @@ const deleteProduct = async (req: Request, res: Response, next: NextFunction): P
       t.rollback();
       throw new Error(error);
     });
+    t.commit();
     res.status(200).json({ success: true, data: { message: "success" } });
   } catch (error) {
     next(error);

@@ -13,9 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const store_model_1 = __importDefault(require("../../../models/store.model"));
+const product_model_1 = __importDefault(require("../../../models/product.model"));
+const cloud_config_1 = __importDefault(require("../../../configs/cloud.config"));
+const image_model_1 = __importDefault(require("../../../models/image.model"));
+const database_config_1 = __importDefault(require("../../../configs/database.config"));
+const sequelize_1 = require("sequelize");
 const deleteStore = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { idStore } = req.params;
     const { userId } = req.USER;
+    const t = yield database_config_1.default.transaction();
     try {
         const findStore = yield store_model_1.default.findOne({ where: { idStore } });
         if (!findStore)
@@ -23,11 +29,44 @@ const deleteStore = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         const access = Array.from(JSON.parse(findStore.access)).filter((x, _v) => x.userId == userId && x.role == "owner");
         if (!access)
             return res.status(403).json({ success: false, error: { message: "You are not alowed to do that" } });
-        const store = yield store_model_1.default.destroy({ where: { idStore } });
-        res.status(200).json({ success: true, data: { message: "success", store } });
+        yield store_model_1.default.destroy({ where: { idStore }, transaction: t })
+            .then(() => __awaiter(void 0, void 0, void 0, function* () {
+            yield product_model_1.default.destroy({
+                where: {
+                    idStore,
+                },
+                transaction: t,
+            });
+        }))
+            .then(() => __awaiter(void 0, void 0, void 0, function* () {
+            yield image_model_1.default.destroy({
+                where: {
+                    idCloud: {
+                        [sequelize_1.Op.like]: `%project/${idStore}%`,
+                    },
+                },
+                transaction: t,
+            });
+        }))
+            .catch(error => {
+            t.rollback();
+            throw new Error(error);
+        });
+        yield cloud_config_1.default.api.delete_resources_by_prefix(`project/${idStore}`).catch(() => {
+            t.rollback();
+            throw new Error("error");
+        });
+        t.commit();
     }
     catch (error) {
-        next(error);
+        return next(error);
+    }
+    try {
+        yield cloud_config_1.default.api.delete_folder(`project/${idStore}`);
+        res.status(200).json({ success: true, data: { message: "success" } });
+    }
+    catch (error) {
+        return next(error);
     }
 });
 exports.default = deleteStore;

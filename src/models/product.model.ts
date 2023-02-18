@@ -73,7 +73,7 @@ Product.init(
   },
   {
     hooks: {
-      beforeCreate: async data => {
+      beforeCreate: data => {
         const createdAtAndUpdatedAt = new Date().getTime();
         data.createdAt = Number(createdAtAndUpdatedAt);
         data.updatedAt = Number(createdAtAndUpdatedAt);
