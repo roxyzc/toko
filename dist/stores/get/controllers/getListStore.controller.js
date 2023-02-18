@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const store_model_1 = __importDefault(require("../../../models/store.model"));
 const sequelize_1 = require("sequelize");
 const image_model_1 = __importDefault(require("../../../models/image.model"));
+const crypto_js_1 = __importDefault(require("crypto-js"));
 const getStores = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.USER;
     try {
@@ -37,7 +38,14 @@ const getStores = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         });
         if (data.length === 0)
             return res.status(202).json({ success: true, data: { message: "The user doesn't have a store yet" } });
-        res.status(200).json({ success: true, data });
+        const encrypt = crypto_js_1.default.AES.encrypt(JSON.stringify(data), process.env.SALTHASHIDS).toString();
+        res.status(200).json({
+            success: true,
+            data: {
+                encrypt,
+                decrypt: JSON.parse(crypto_js_1.default.AES.decrypt(encrypt, process.env.SALTHASHIDS).toString(crypto_js_1.default.enc.Utf8)),
+            },
+        });
     }
     catch (error) {
         next(error);

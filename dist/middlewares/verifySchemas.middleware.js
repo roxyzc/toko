@@ -137,11 +137,11 @@ const schema = {
                 "string.min": `{{#label}} should have a minimum length of {#limit}`,
                 "any.required": `{{#label}} is a required field`,
             }),
-            price: joi_1.default.number().integer().label("Price").required().min(1).messages({
+            price: joi_1.default.number().integer().label("Price").required().min(0).messages({
                 "any.required": `{{#label}} is a required field`,
             }),
             discount: joi_1.default.number().integer().min(0).max(100).optional().label("Discount"),
-            stoke: joi_1.default.number().integer().min(1).required().label("Stoke").messages({
+            stoke: joi_1.default.number().integer().min(0).required().label("Stoke").messages({
                 "any.required": `{{#label}} is a required field`,
             }),
             category: joi_1.default.string().trim().required().label("Category").messages({
@@ -166,7 +166,7 @@ const schema = {
             }),
             price: joi_1.default.number().integer().label("Price").min(0),
             discount: joi_1.default.number().integer().min(0).max(100).label("Discount"),
-            stoke: joi_1.default.number().integer().min(1).label("Stoke"),
+            stoke: joi_1.default.number().integer().min(0).label("Stoke"),
             category: joi_1.default.string().trim().label("Category"),
             detail: joi_1.default.string().label("Detail"),
             image: joi_1.default.any().label("Image"),

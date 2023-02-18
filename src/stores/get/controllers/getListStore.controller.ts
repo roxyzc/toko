@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Store from "@model/store.model";
 import { Op } from "sequelize";
 import Image from "@model/image.model";
+import CryptoJS from "crypto-js";
 
 const getStores = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { userId } = req.USER;
@@ -26,7 +27,17 @@ const getStores = async (req: Request, res: Response, next: NextFunction): Promi
 
     if (data.length === 0)
       return res.status(202).json({ success: true, data: { message: "The user doesn't have a store yet" } });
-    res.status(200).json({ success: true, data });
+
+    const encrypt = CryptoJS.AES.encrypt(JSON.stringify(data), process.env.SALTHASHIDS as string).toString();
+    res.status(200).json({
+      success: true,
+      data: {
+        encrypt,
+        decrypt: JSON.parse(
+          CryptoJS.AES.decrypt(encrypt, process.env.SALTHASHIDS as string).toString(CryptoJS.enc.Utf8)
+        ),
+      },
+    });
   } catch (error) {
     next(error);
   }
