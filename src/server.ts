@@ -8,7 +8,8 @@ import db from "./configs/database.config";
 import routeAuth from "./auth/index";
 import routeStore from "./stores/index";
 import routeProduct from "./products/index";
-import route from "./other/index";
+import routeCart from "./cart/index";
+import route from "./others/index";
 import cekOtp from "./services/otp.service";
 import cekUser from "./services/user.service";
 
@@ -42,6 +43,7 @@ cekUser;
 app.use("/api/auth", routeAuth);
 app.use("/api", routeStore);
 app.use("/api/product", routeProduct);
+app.use("/api", routeCart);
 app.use("/api", route);
 app.use(notFound);
 app.use(errorHandler);

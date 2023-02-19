@@ -26,6 +26,12 @@ const query = {
       ip: joi.string().required().label("ip"),
     }),
   },
+  cart: {
+    add: joi.object({
+      is: joi.string().required().label("is"),
+      ip: joi.string().required().label("ip"),
+    }),
+  },
 };
 
 export { validateQuery, query };

@@ -32,7 +32,7 @@ Product.init(
     },
     idStore: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     nameProduct: {
       type: DataTypes.STRING,

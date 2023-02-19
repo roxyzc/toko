@@ -4,55 +4,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
+const product_model_1 = __importDefault(require("./product.model"));
 const database_config_1 = __importDefault(require("../configs/database.config"));
-const image_model_1 = __importDefault(require("./image.model"));
-class Product extends sequelize_1.Model {
+class Cart extends sequelize_1.Model {
 }
-Product.init({
-    idProduct: {
+Cart.init({
+    idCart: {
         type: sequelize_1.DataTypes.STRING,
         primaryKey: true,
         allowNull: false,
         defaultValue: (0, sequelize_1.UUIDV4)(),
     },
+    userId: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+    },
     idStore: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
-    nameProduct: {
+    idProduct: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+    },
+    count: {
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
     price: {
         type: sequelize_1.DataTypes.BIGINT,
-        allowNull: true,
-    },
-    discount: {
-        type: sequelize_1.DataTypes.INTEGER,
-        allowNull: true,
-    },
-    stoke: {
-        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
-    category: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
-    },
-    detail: {
-        type: sequelize_1.DataTypes.STRING(1000),
-        allowNull: false,
-    },
-    idImage: {
-        type: sequelize_1.DataTypes.STRING,
+    totalPrice: {
+        type: sequelize_1.DataTypes.BIGINT,
         allowNull: false,
     },
     createdAt: {
-        type: sequelize_1.DataTypes.BIGINT(),
+        type: sequelize_1.DataTypes.BIGINT,
         allowNull: true,
     },
     updatedAt: {
-        type: sequelize_1.DataTypes.BIGINT(),
+        type: sequelize_1.DataTypes.BIGINT,
         allowNull: true,
     },
 }, {
@@ -65,10 +57,10 @@ Product.init({
     },
     sequelize: database_config_1.default,
     timestamps: false,
-    tableName: "Products",
     freezeTableName: true,
+    tableName: "Cart",
 });
-Product.removeAttribute("id");
-image_model_1.default.hasOne(Product, { foreignKey: "idImage" });
-Product.belongsTo(image_model_1.default, { as: "image", foreignKey: "idImage" });
-exports.default = Product;
+Cart.removeAttribute("id");
+product_model_1.default.hasOne(Cart, { foreignKey: "idProduct" });
+Cart.belongsTo(product_model_1.default, { as: "product", foreignKey: "idProduct" });
+exports.default = Cart;

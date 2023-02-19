@@ -40,5 +40,11 @@ const query = {
             ip: joi_1.default.string().required().label("ip"),
         }),
     },
+    cart: {
+        add: joi_1.default.object({
+            is: joi_1.default.string().required().label("is"),
+            ip: joi_1.default.string().required().label("ip"),
+        }),
+    },
 };
 exports.query = query;
