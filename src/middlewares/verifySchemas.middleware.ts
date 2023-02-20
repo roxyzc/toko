@@ -158,6 +158,11 @@ const schema = {
       image: joi.any().label("Image"),
     }),
   },
+  Cart: {
+    add: joi.object({
+      count: joi.number().integer().min(1).label("Count"),
+    }),
+  },
   Other: {
     cekEmail: joi.object({
       email: joi.string().email().label("Email").required().messages({

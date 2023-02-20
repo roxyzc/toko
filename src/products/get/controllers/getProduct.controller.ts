@@ -35,10 +35,13 @@ const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     let pagination = {};
     Object.assign(pagination, { totalRow: products.count, totalPage: Math.ceil(count / limit) });
     if (end < count) {
-      Object.assign(pagination, { next: { page: page + 1, limit } });
+      Object.assign(pagination, { next: { page: page + 1, limit, remaining: count - (start + limit) } });
     }
     if (start > 0) {
-      Object.assign(pagination, { prev: { page: page - 1, limit } });
+      Object.assign(pagination, { prev: { page: page - 1, limit, ramaining: count - (count - start) } });
+    }
+    if (page > Math.ceil(count / limit)) {
+      Object.assign(pagination, { prev: { Premaining: count } });
     }
     res.status(200).json({ success: true, pagination, data: products.rows });
   } catch (error) {

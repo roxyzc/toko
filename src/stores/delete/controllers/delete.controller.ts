@@ -5,18 +5,21 @@ import cloud from "@config/cloud.config";
 import Image from "@model/image.model";
 import db from "@config/database.config";
 import { Op } from "sequelize";
+import { checkAccessUserInStoreAsOwner } from "@service/store.service";
 
 const deleteStore = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { idStore } = req.params;
   const { userId } = req.USER;
   const t = await db.transaction();
   try {
-    const findStore = await Store.findOne({ where: { idStore } });
-    if (!findStore) return res.status(404).json({ success: false, error: { message: "store not found" } });
-    const access = Array.from(JSON.parse(findStore.access)).filter(
-      (x: any, _v) => x.userId == userId && x.role == "owner"
-    );
-    if (!access) return res.status(403).json({ success: false, error: { message: "You are not alowed to do that" } });
+    // const findStore = await Store.findOne({ where: { idStore } });
+    // if (!findStore) return res.status(404).json({ success: false, error: { message: "store not found" } });
+    // const access = Array.from(JSON.parse(findStore.access)).filter(
+    //   (x: any, _v) => x.userId == userId && x.role == "owner"
+    // );
+    if (!(await checkAccessUserInStoreAsOwner(userId, idStore as string)))
+      return res.status(403).json({ success: false, error: { message: "You are not alowed to do that" } });
+
     await Store.destroy({ where: { idStore }, transaction: t })
       .then(async () => {
         await Product.destroy({

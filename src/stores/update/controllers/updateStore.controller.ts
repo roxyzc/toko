@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { checkAccessUserInStore } from "@service/store.service";
+import { checkAccessUserInStoreAsOwner } from "@service/store.service";
 import Store from "@model/store.model";
 import Image from "@model/image.model";
 import cloud from "@config/cloud.config";
@@ -9,8 +9,8 @@ const updateStore = async (req: Request, res: Response, next: NextFunction): Pro
   const { userId } = req.USER;
   const { nameStore, tax, income, image } = req.body;
   try {
-    if (!(await checkAccessUserInStore(userId, idStore as string)))
-      return res.status(400).json({ success: false, error: { message: "error" } });
+    if (!(await checkAccessUserInStoreAsOwner(userId, idStore as string)))
+      return res.status(400).json({ success: false, error: { message: "You are not alowed to do that" } });
 
     if (image !== undefined) {
       await Store.findOne({

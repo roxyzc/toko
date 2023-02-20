@@ -1,6 +1,7 @@
 import { Model, DataTypes, UUIDV4 } from "sequelize";
 import db from "../configs/database.config";
 import Image from "./image.model";
+import Store from "./store.model";
 
 export interface IProductModel {
   idProduct?: string;
@@ -20,6 +21,7 @@ class Product extends Model<IProductModel> {
   createdAt?: Number;
   updatedAt?: Number;
   image?: any;
+  store?: any;
 }
 
 Product.init(
@@ -89,4 +91,6 @@ Product.init(
 Product.removeAttribute("id");
 Image.hasOne(Product, { foreignKey: "idImage" });
 Product.belongsTo(Image, { as: "image", foreignKey: "idImage" });
+Store.hasOne(Product, { foreignKey: "idStore" });
+Product.belongsTo(Store, { as: "store", foreignKey: "idStore" });
 export default Product;

@@ -24,6 +24,7 @@ const add = async (req: Request, res: Response, next: NextFunction): Promise<any
           },
         ],
       },
+      include: [{ model: Store, as: "store", attributes: ["discount"] }],
     });
     if (!product) return res.status(404).json({ success: false, error: { message: "Product not found" } });
     let price: Number =
@@ -31,17 +32,8 @@ const add = async (req: Request, res: Response, next: NextFunction): Promise<any
         ? Number(product.getDataValue("price")) * (Number(product.getDataValue("discount")) / 100)
         : product.getDataValue("price");
 
-    const store = await Store.findOne({
-      where: {
-        idStore: is as string,
-        discount: {
-          [Op.gt]: 0,
-        },
-      },
-      attributes: ["discount"],
-    });
-
-    price = !store ? price : Number(price) - Number(price) * (Number(store.getDataValue("discount")) / 100);
+    price =
+      product.store?.discount == 0 ? price : Number(price) - Number(price) * (Number(product.store?.discount) / 100);
     await Cart.create({
       userId,
       idProduct: ip as string,
@@ -53,6 +45,7 @@ const add = async (req: Request, res: Response, next: NextFunction): Promise<any
       .then(async value => {
         const cart = await Cart.findOne({
           where: { idCart: value.getDataValue("idCart") },
+          attributes: ["count", "price", "totalPrice"],
           include: [
             {
               model: Product,

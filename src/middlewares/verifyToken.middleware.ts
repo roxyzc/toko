@@ -58,7 +58,6 @@ const checkExpiredToken = async (req: Request, res: Response, next: NextFunction
     const authHeader = req.headers["authorization"];
     if (!authHeader) return res.status(499).json({ success: false, error: { message: "token required" } });
     const token = authHeader.split(" ")[1];
-
     const findToken = await findTokenInDatabase(token);
     if (!findToken) return res.status(400).json({ success: false, error: { message: "token invalid" } });
     jwt.verify(token as string, process.env.ACCESSTOKENSECRET as string, async (error, _decoded): Promise<any> => {
