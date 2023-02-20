@@ -18,6 +18,7 @@ const sequelize_1 = require("sequelize");
 const store_model_1 = __importDefault(require("../../../models/store.model"));
 const image_model_1 = __importDefault(require("../../../models/image.model"));
 const add = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     const { is, ip } = req.query;
     const { userId } = req.USER;
     const { count = 1 } = req.body;
@@ -36,22 +37,15 @@ const add = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
                     },
                 ],
             },
+            include: [{ model: store_model_1.default, as: "store", attributes: ["discount"] }],
         });
         if (!product)
             return res.status(404).json({ success: false, error: { message: "Product not found" } });
         let price = product.getDataValue("discount") != 0
             ? Number(product.getDataValue("price")) * (Number(product.getDataValue("discount")) / 100)
             : product.getDataValue("price");
-        const store = yield store_model_1.default.findOne({
-            where: {
-                idStore: is,
-                discount: {
-                    [sequelize_1.Op.gt]: 0,
-                },
-            },
-            attributes: ["discount"],
-        });
-        price = !store ? price : Number(price) - Number(price) * (Number(store.getDataValue("discount")) / 100);
+        price =
+            ((_a = product.store) === null || _a === void 0 ? void 0 : _a.discount) == 0 ? price : Number(price) - Number(price) * (Number((_b = product.store) === null || _b === void 0 ? void 0 : _b.discount) / 100);
         yield cart_model_1.default.create({
             userId,
             idProduct: ip,
@@ -63,6 +57,7 @@ const add = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
             .then((value) => __awaiter(void 0, void 0, void 0, function* () {
             const cart = yield cart_model_1.default.findOne({
                 where: { idCart: value.getDataValue("idCart") },
+                attributes: ["count", "price", "totalPrice"],
                 include: [
                     {
                         model: product_model_1.default,

@@ -18,16 +18,13 @@ const cloud_config_1 = __importDefault(require("../../../configs/cloud.config"))
 const image_model_1 = __importDefault(require("../../../models/image.model"));
 const database_config_1 = __importDefault(require("../../../configs/database.config"));
 const sequelize_1 = require("sequelize");
+const store_service_1 = require("../../../services/store.service");
 const deleteStore = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { idStore } = req.params;
     const { userId } = req.USER;
     const t = yield database_config_1.default.transaction();
     try {
-        const findStore = yield store_model_1.default.findOne({ where: { idStore } });
-        if (!findStore)
-            return res.status(404).json({ success: false, error: { message: "store not found" } });
-        const access = Array.from(JSON.parse(findStore.access)).filter((x, _v) => x.userId == userId && x.role == "owner");
-        if (!access)
+        if (!(yield (0, store_service_1.checkAccessUserInStoreAsOwner)(userId, idStore)))
             return res.status(403).json({ success: false, error: { message: "You are not alowed to do that" } });
         yield store_model_1.default.destroy({ where: { idStore }, transaction: t })
             .then(() => __awaiter(void 0, void 0, void 0, function* () {

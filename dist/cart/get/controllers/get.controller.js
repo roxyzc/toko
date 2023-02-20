@@ -12,53 +12,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const cart_model_1 = __importDefault(require("../../../models/cart.model"));
 const image_model_1 = __importDefault(require("../../../models/image.model"));
 const product_model_1 = __importDefault(require("../../../models/product.model"));
-const sequelize_1 = require("sequelize");
-const getProducts = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const get = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let limit = Number.isNaN(Number(req.query.limit)) ? 10 : Number(req.query.limit);
     let page = Number.isNaN(Number(req.query.page)) ? 1 : Number(req.query.page);
-    let search = req.query.search === undefined || req.query.search === "" ? "" : req.query.search;
     let start = (page - 1) * limit;
     let end = page * limit;
+    const { userId } = req.USER;
     try {
-        const products = yield product_model_1.default.findAndCountAll({
-            where: {
-                idStore: req.params.idStore,
-                nameProduct: { [sequelize_1.Op.like]: `%${search}%` },
-            },
-            attributes: [
-                "idProduct",
-                "nameProduct",
-                "price",
-                "discount",
-                "stoke",
-                "detail",
-                "category",
-                "createdAt",
-                "updatedAt",
+        const cart = yield cart_model_1.default.findAndCountAll({
+            where: { userId },
+            attributes: ["count", "price", "totalPrice"],
+            include: [
+                {
+                    model: product_model_1.default,
+                    as: "product",
+                    attributes: ["nameProduct"],
+                    include: [{ model: image_model_1.default, as: "image", attributes: ["secure_url"] }],
+                },
             ],
-            order: [["updatedAt", "DESC"]],
-            include: [{ model: image_model_1.default, as: "image", attributes: ["secure_url"] }],
+            order: [["updatedAt", "ASC"]],
             limit: limit,
             offset: start,
         });
-        let count = products.count;
+        let count = cart.count;
         let pagination = {};
-        Object.assign(pagination, { totalRow: products.count, totalPage: Math.ceil(count / limit) });
+        Object.assign(pagination, { totalRow: cart.count, totalPage: Math.ceil(count / limit) });
         if (end < count) {
             Object.assign(pagination, { next: { page: page + 1, limit, remaining: count - (start + limit) } });
         }
         if (start > 0) {
-            Object.assign(pagination, { prev: { page: page - 1, limit, ramaining: count - (count - start) } });
+            Object.assign(pagination, { prev: { page: page - 1, limit, remaining: count - (count - start) } });
         }
         if (page > Math.ceil(count / limit)) {
             Object.assign(pagination, { prev: { Premaining: count } });
         }
-        res.status(200).json({ success: true, pagination, data: products.rows });
+        res.status(200).json({ success: true, pagination, data: cart });
     }
     catch (error) {
         next(error);
     }
 });
-exports.default = getProducts;
+exports.default = get;

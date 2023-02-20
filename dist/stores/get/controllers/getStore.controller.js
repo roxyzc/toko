@@ -12,18 +12,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const token_model_1 = __importDefault(require("../../../models/token.model"));
-const logout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
-    const token = (_b = (_a = req.headers["authorization"]) === null || _a === void 0 ? void 0 : _a.split(" ")[1]) !== null && _b !== void 0 ? _b : "";
+const crypto_js_1 = __importDefault(require("crypto-js"));
+const store_model_1 = __importDefault(require("../../../models/store.model"));
+const image_model_1 = __importDefault(require("../../../models/image.model"));
+const getStore = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { idStore } = req.params;
     try {
-        if (token === undefined)
-            return res.status(400).json({ success: false, error: { message: "token required" } });
-        yield token_model_1.default.destroy({ where: { accessToken: token } });
-        return res.status(200).json({ success: true, error: { message: "logout successfully" } });
+        const store = yield store_model_1.default.findOne({
+            where: { idStore },
+            attributes: ["nameStore", "tax", "income", "discount"],
+            include: [{ model: image_model_1.default, as: "image", attributes: ["secure_url"] }],
+        });
+        if (!store)
+            return res.status(404).json({ success: false, error: { message: "Store not found" } });
+        const data = crypto_js_1.default.AES.encrypt(JSON.stringify(store), process.env.SALTHASHIDS).toString();
+        res.status(200).json({
+            success: true,
+            data,
+        });
     }
     catch (error) {
         next(error);
     }
 });
-exports.default = logout;
+exports.default = getStore;

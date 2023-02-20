@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkAccessUserInStore = void 0;
+exports.checkAccessUserInStoreAsOwner = exports.checkAccessUserInStore = void 0;
 const store_model_1 = __importDefault(require("../models/store.model"));
 const checkUserInStore_util_1 = require("../utils/checkUserInStore.util");
 const checkAccessUserInStore = (userId, idStore) => __awaiter(void 0, void 0, void 0, function* () {
@@ -28,3 +28,16 @@ const checkAccessUserInStore = (userId, idStore) => __awaiter(void 0, void 0, vo
     return Promise.resolve(true);
 });
 exports.checkAccessUserInStore = checkAccessUserInStore;
+const checkAccessUserInStoreAsOwner = (userId, idStore) => __awaiter(void 0, void 0, void 0, function* () {
+    const store = yield store_model_1.default.findOne({
+        where: { idStore },
+        attributes: ["access"],
+    });
+    if (!store)
+        return Promise.resolve(false);
+    const access = Array.from(JSON.parse(store.access));
+    if ((yield (0, checkUserInStore_util_1.checkUserInStoreAsOwner)(userId, access)) === false)
+        return Promise.resolve(false);
+    return Promise.resolve(true);
+});
+exports.checkAccessUserInStoreAsOwner = checkAccessUserInStoreAsOwner;

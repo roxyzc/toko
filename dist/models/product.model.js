@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const database_config_1 = __importDefault(require("../configs/database.config"));
 const image_model_1 = __importDefault(require("./image.model"));
+const store_model_1 = __importDefault(require("./store.model"));
 class Product extends sequelize_1.Model {
 }
 Product.init({
@@ -71,4 +72,6 @@ Product.init({
 Product.removeAttribute("id");
 image_model_1.default.hasOne(Product, { foreignKey: "idImage" });
 Product.belongsTo(image_model_1.default, { as: "image", foreignKey: "idImage" });
+store_model_1.default.hasOne(Product, { foreignKey: "idStore" });
+Product.belongsTo(store_model_1.default, { as: "store", foreignKey: "idStore" });
 exports.default = Product;

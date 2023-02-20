@@ -21,8 +21,8 @@ const updateStore = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     const { userId } = req.USER;
     const { nameStore, tax, income, image } = req.body;
     try {
-        if (!(yield (0, store_service_1.checkAccessUserInStore)(userId, idStore)))
-            return res.status(400).json({ success: false, error: { message: "error" } });
+        if (!(yield (0, store_service_1.checkAccessUserInStoreAsOwner)(userId, idStore)))
+            return res.status(400).json({ success: false, error: { message: "You are not alowed to do that" } });
         if (image !== undefined) {
             yield store_model_1.default.findOne({
                 where: {
