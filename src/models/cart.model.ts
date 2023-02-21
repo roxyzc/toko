@@ -17,6 +17,7 @@ export interface ICartModel {
 class Cart extends Model<ICartModel> {
   createdAt?: Number;
   updatedAt?: Number;
+  product?: any;
 }
 
 Cart.init(

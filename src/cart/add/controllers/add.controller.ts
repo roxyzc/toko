@@ -18,15 +18,20 @@ const add = async (req: Request, res: Response, next: NextFunction): Promise<any
             idProduct: ip as string,
           },
           {
-            stoke: {
+            stock: {
               [Op.gt]: 0,
             },
           },
         ],
       },
+      attributes: ["stock", "discount", "price"],
       include: [{ model: Store, as: "store", attributes: ["discount"] }],
     });
     if (!product) return res.status(404).json({ success: false, error: { message: "Product not found" } });
+    if (count > product.getDataValue("stock"))
+      return res
+        .status(400)
+        .json({ success: false, error: { message: `remaining stock ${product.getDataValue("stock")}` } });
     let price: Number =
       product.getDataValue("discount") != 0
         ? Number(product.getDataValue("price")) * (Number(product.getDataValue("discount")) / 100)

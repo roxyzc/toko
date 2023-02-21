@@ -127,7 +127,7 @@ const schema = {
         "any.required": `{{#label}} is a required field`,
       }),
       discount: joi.number().integer().min(0).max(100).optional().label("Discount"),
-      stoke: joi.number().integer().min(0).required().label("Stoke").messages({
+      stock: joi.number().integer().min(0).required().label("Stock").messages({
         "any.required": `{{#label}} is a required field`,
       }),
       category: joi.string().trim().required().label("Category").messages({
@@ -152,14 +152,14 @@ const schema = {
         }),
       price: joi.number().integer().label("Price").min(0),
       discount: joi.number().integer().min(0).max(100).label("Discount"),
-      stoke: joi.number().integer().min(0).label("Stoke"),
+      stock: joi.number().integer().min(0).label("Stock"),
       category: joi.string().trim().label("Category"),
       detail: joi.string().label("Detail"),
       image: joi.any().label("Image"),
     }),
   },
   Cart: {
-    add: joi.object({
+    addAndUpdate: joi.object({
       count: joi.number().integer().min(1).label("Count"),
     }),
   },

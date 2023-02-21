@@ -20,7 +20,7 @@ const getProducts = async (req: Request, res: Response, next: NextFunction) => {
         "nameProduct",
         "price",
         "discount",
-        "stoke",
+        "stock",
         "detail",
         "category",
         "createdAt",

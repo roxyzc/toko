@@ -9,7 +9,7 @@ export interface IProductModel {
   nameProduct: string;
   price: Number;
   discount?: Number;
-  stoke: Number;
+  stock: Number;
   category: string;
   detail: string;
   idImage: string;
@@ -48,7 +48,7 @@ Product.init(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    stoke: {
+    stock: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },

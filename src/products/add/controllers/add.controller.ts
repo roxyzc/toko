@@ -5,7 +5,7 @@ import cloud from "@config/cloud.config";
 import { checkAccessUserInStore } from "@service/store.service";
 
 const addProduct = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-  const { nameProduct, price, discount = 0, stoke, category, detail, image } = req.body;
+  const { nameProduct, price, discount = 0, stock, category, detail, image } = req.body;
   const { userId } = req.USER;
   const { idStore } = req.params;
   try {
@@ -24,7 +24,7 @@ const addProduct = async (req: Request, res: Response, next: NextFunction): Prom
           nameProduct,
           price,
           discount,
-          stoke,
+          stock,
           category: String(category).toLowerCase(),
           detail,
           idImage: x.getDataValue("idImage") as string,

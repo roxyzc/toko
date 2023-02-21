@@ -6,7 +6,7 @@ import { checkAccessUserInStore } from "@service/store.service";
 
 const updateProduct = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { is, ip } = req.query;
-  const { nameProduct, stoke, price, discount, category, detail, image } = req.body;
+  const { nameProduct, stock, price, discount, category, detail, image } = req.body;
   const { userId } = req.USER;
   try {
     if (!(await checkAccessUserInStore(userId, is as string)))
@@ -29,7 +29,7 @@ const updateProduct = async (req: Request, res: Response, next: NextFunction): P
     await Product.update(
       {
         nameProduct,
-        stoke,
+        stock,
         price,
         discount,
         category,
