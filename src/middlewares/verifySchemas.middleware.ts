@@ -96,8 +96,8 @@ const schema = {
         .trim()
         .regex(/^[\w\s]+$/)
         .label("Name store"),
+      discount: joi.number().integer().min(0).max(100).label("Discount"),
       tax: joi.number().integer().min(0).label("Tax"),
-      income: joi.number().integer().min(0).label("Income"),
       image: joi.any().label("Image"),
     }),
     addC: joi.object({

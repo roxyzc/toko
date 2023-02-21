@@ -7,7 +7,7 @@ import cloud from "@config/cloud.config";
 const updateStore = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { idStore } = req.params;
   const { userId } = req.USER;
-  const { nameStore, tax, income, image } = req.body;
+  const { nameStore, tax, discount, image } = req.body;
   try {
     if (!(await checkAccessUserInStoreAsOwner(userId, idStore as string)))
       return res.status(400).json({ success: false, error: { message: "You are not alowed to do that" } });
@@ -38,7 +38,7 @@ const updateStore = async (req: Request, res: Response, next: NextFunction): Pro
       {
         nameStore,
         tax,
-        income,
+        discount,
         updatedAt: Number(new Date().getTime()),
       },
       { where: { idStore } }
