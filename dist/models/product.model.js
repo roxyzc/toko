@@ -32,7 +32,7 @@ Product.init({
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: true,
     },
-    stoke: {
+    stock: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },

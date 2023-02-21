@@ -110,8 +110,8 @@ const schema = {
                 .trim()
                 .regex(/^[\w\s]+$/)
                 .label("Name store"),
+            discount: joi_1.default.number().integer().min(0).max(100).label("Discount"),
             tax: joi_1.default.number().integer().min(0).label("Tax"),
-            income: joi_1.default.number().integer().min(0).label("Income"),
             image: joi_1.default.any().label("Image"),
         }),
         addC: joi_1.default.object({
@@ -141,7 +141,7 @@ const schema = {
                 "any.required": `{{#label}} is a required field`,
             }),
             discount: joi_1.default.number().integer().min(0).max(100).optional().label("Discount"),
-            stoke: joi_1.default.number().integer().min(0).required().label("Stoke").messages({
+            stock: joi_1.default.number().integer().min(0).required().label("Stock").messages({
                 "any.required": `{{#label}} is a required field`,
             }),
             category: joi_1.default.string().trim().required().label("Category").messages({
@@ -166,14 +166,14 @@ const schema = {
             }),
             price: joi_1.default.number().integer().label("Price").min(0),
             discount: joi_1.default.number().integer().min(0).max(100).label("Discount"),
-            stoke: joi_1.default.number().integer().min(0).label("Stoke"),
+            stock: joi_1.default.number().integer().min(0).label("Stock"),
             category: joi_1.default.string().trim().label("Category"),
             detail: joi_1.default.string().label("Detail"),
             image: joi_1.default.any().label("Image"),
         }),
     },
     Cart: {
-        add: joi_1.default.object({
+        addAndUpdate: joi_1.default.object({
             count: joi_1.default.number().integer().min(1).label("Count"),
         }),
     },

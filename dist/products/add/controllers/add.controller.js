@@ -17,7 +17,7 @@ const image_model_1 = __importDefault(require("../../../models/image.model"));
 const cloud_config_1 = __importDefault(require("../../../configs/cloud.config"));
 const store_service_1 = require("../../../services/store.service");
 const addProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { nameProduct, price, discount = 0, stoke, category, detail, image } = req.body;
+    const { nameProduct, price, discount = 0, stock, category, detail, image } = req.body;
     const { userId } = req.USER;
     const { idStore } = req.params;
     try {
@@ -36,7 +36,7 @@ const addProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
                 nameProduct,
                 price,
                 discount,
-                stoke,
+                stock,
                 category: String(category).toLowerCase(),
                 detail,
                 idImage: x.getDataValue("idImage"),

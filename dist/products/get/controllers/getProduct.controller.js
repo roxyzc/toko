@@ -32,7 +32,7 @@ const getProducts = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
                 "nameProduct",
                 "price",
                 "discount",
-                "stoke",
+                "stock",
                 "detail",
                 "category",
                 "createdAt",

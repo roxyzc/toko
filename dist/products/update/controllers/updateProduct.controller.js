@@ -18,7 +18,7 @@ const cloud_config_1 = __importDefault(require("../../../configs/cloud.config"))
 const store_service_1 = require("../../../services/store.service");
 const updateProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { is, ip } = req.query;
-    const { nameProduct, stoke, price, discount, category, detail, image } = req.body;
+    const { nameProduct, stock, price, discount, category, detail, image } = req.body;
     const { userId } = req.USER;
     try {
         if (!(yield (0, store_service_1.checkAccessUserInStore)(userId, is)))
@@ -40,7 +40,7 @@ const updateProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         }
         yield product_model_1.default.update({
             nameProduct,
-            stoke,
+            stock,
             price,
             discount,
             category,

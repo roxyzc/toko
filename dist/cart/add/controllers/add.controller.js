@@ -31,16 +31,21 @@ const add = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
                         idProduct: ip,
                     },
                     {
-                        stoke: {
+                        stock: {
                             [sequelize_1.Op.gt]: 0,
                         },
                     },
                 ],
             },
+            attributes: ["stock", "discount", "price"],
             include: [{ model: store_model_1.default, as: "store", attributes: ["discount"] }],
         });
         if (!product)
             return res.status(404).json({ success: false, error: { message: "Product not found" } });
+        if (count > product.getDataValue("stock"))
+            return res
+                .status(400)
+                .json({ success: false, error: { message: `remaining stock ${product.getDataValue("stock")}` } });
         let price = product.getDataValue("discount") != 0
             ? Number(product.getDataValue("price")) * (Number(product.getDataValue("discount")) / 100)
             : product.getDataValue("price");

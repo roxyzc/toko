@@ -41,7 +41,7 @@ const query = {
         }),
     },
     cart: {
-        add: joi_1.default.object({
+        addUpdateAndDelete: joi_1.default.object({
             is: joi_1.default.string().required().label("is"),
             ip: joi_1.default.string().required().label("ip"),
         }),

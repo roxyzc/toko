@@ -19,7 +19,7 @@ const cloud_config_1 = __importDefault(require("../../../configs/cloud.config"))
 const updateStore = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { idStore } = req.params;
     const { userId } = req.USER;
-    const { nameStore, tax, income, image } = req.body;
+    const { nameStore, tax, discount, image } = req.body;
     try {
         if (!(yield (0, store_service_1.checkAccessUserInStoreAsOwner)(userId, idStore)))
             return res.status(400).json({ success: false, error: { message: "You are not alowed to do that" } });
@@ -44,7 +44,7 @@ const updateStore = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         yield store_model_1.default.update({
             nameStore,
             tax,
-            income,
+            discount,
             updatedAt: Number(new Date().getTime()),
         }, { where: { idStore } });
         res.status(200).json({ success: true, data: { message: "success" } });
